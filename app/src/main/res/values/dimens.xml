@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="common_spacing">16dp</dimen>
+    <dimen name="common_spacing_small">8dp</dimen>
+    <dimen name="post_avatar_size">48dp</dimen>
+    <dimen name="font_size">16sp</dimen>
+    <dimen name="post_elements_size">30dp</dimen>
+    <dimen name="icon_button_min_size">48dp</dimen>
+    <dimen name="icon_button_min_size_small">24dp</dimen>
+    <dimen name="fab_mini_size">40dp</dimen>
+    <dimen name="fab_normal_size">56dp</dimen>
+    <dimen name="button_corner_radius">24dp</dimen>
+    <item name="count_post_lines_content_list" type="integer">2</item>
+
+</resources>

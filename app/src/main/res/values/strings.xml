@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">NMedia</string>
+    <string name="avatar">Avatar</string>
+    <string name="desc_options_button">Options</string>
+    <string name="image_heart">Heart</string>
+    <string name="image_share">Share</string>
+    <string name="image_view">View</string>
+    <string name="menu_item_remove">Remove</string>
+    <string name="menu_item_edit">Edit</string>
+    <string name="hint_new_post">Enter text</string>
+    <string name="desc_fab_add">Add button</string>
+    <string name="main_edit_message">Edit Message</string>
+    <string name="desc_fab_cancel">Cancel button</string>
+    <string name="desc_fab_save">Save button</string>
+    <string name="desc_attachment_youtube">Attachment</string>
+    <string name="chooser_share_post">Share post</string>
+    <string name="desc_fab_post_save">OK button</string>
+    <string name="title_new_post">New post</string>
+    <string name="title_edit_post">Edit post</string>
+    <string name="action_bar_label">New | edit post</string>
+    <string name="menu_item_move_up">Move Up</string>
+    <string name="menu_item_move_down">Move Down</string>
+    <string name="menu_item_delete">Delete</string>
+    <string name="menu_item_update_date">Correct Date</string>
+</resources>

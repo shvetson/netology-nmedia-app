@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">НМедиа</string>
+    <string name="avatar">Аватарка</string>
+    <string name="desc_options_button">Подменю</string>
+    <string name="image_heart">Сердечко</string>
+    <string name="image_share">Поделиться</string>
+    <string name="image_view">Просмотров</string>
+    <string name="menu_item_remove">Удалить</string>
+    <string name="menu_item_edit">Правка</string>
+    <string name="hint_new_post">Введите комментарий</string>
+    <string name="desc_fab_add">Кнопка Add</string>
+    <string name="main_edit_message">Редактирование поста</string>
+    <string name="desc_fab_cancel">Кнопка Cancel</string>
+    <string name="desc_fab_save">Кнопка Save</string>
+    <string name="desc_attachment_youtube">Вложение</string>
+    <string name="chooser_share_post">Поделиться постом</string>
+    <string name="desc_fab_post_save">Кнопка OK</string>
+    <string name="title_new_post">Новый пост</string>
+    <string name="title_edit_post">Редактирование поста</string>
+    <string name="action_bar_label">Новый пост / редактирование</string>
+    <string name="menu_item_move_up">Перемещение вверх</string>
+    <string name="menu_item_move_down">Перемещение вниз</string>
+    <string name="menu_item_delete">Удаление</string>
+    <string name="menu_item_update_date">Обновление даты</string>
+
+</resources>
