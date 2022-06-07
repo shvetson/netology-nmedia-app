@@ -7,14 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostsListBinding
 import ru.netology.nmedia.model.Post
+import ru.netology.nmedia.ui.PostContentFragment
 import ru.netology.nmedia.ui.adapter.PostAdapter
 import ru.netology.nmedia.ui.listener.PostActionListener
 import ru.netology.nmedia.util.factory
@@ -68,15 +67,16 @@ class PostsListFragment : Fragment() {
             }
         })
 
-        viewModel.posts.observe(viewLifecycleOwner, Observer {
+        viewModel.posts.observe(viewLifecycleOwner) {
             adapter.posts = it
-        })
+        }
 
         val layoutManager = LinearLayoutManager(requireContext())
         binding.postsRecyclerView.layoutManager = layoutManager
         binding.postsRecyclerView.adapter = adapter
 
-// Отключение "мерцания" элемента списка при обновлении одного из полей, но это никак не отразится на анимации при перемещении и удалении элемента списка
+        // Отключение "мерцания" элемента списка при обновлении одного из полей,
+        // но это никак не отразится на анимации при перемещении и удалении элемента списка
         val itemAnimator = binding.postsRecyclerView.itemAnimator
         if (itemAnimator is DefaultItemAnimator) {
             itemAnimator.supportsChangeAnimations = false
@@ -104,25 +104,20 @@ class PostsListFragment : Fragment() {
             startActivity(intent)
         }
 
-//        binding.addPostButton.setOnClickListener{
-//            launchPostContent()
-//        }
-
+        binding.addPostButton.setOnClickListener {
+            launchPostContent()
+        }
         return binding.root
     }
 
-
-//    private fun launchPostContent() {
-//        val fragment:PostContentFragment = PostContentFragment.newInstance(
-//
-//        )
-//        parentFragmentManager
-//            .beginTransaction()
-//            .addToBackStack(null)
-//            .replace(fragmentContainer, PostContentFragment())
-//            .commit()
-//
-//    }
+    private fun launchPostContent() {
+        val fragment = PostContentFragment.newInstance()
+        parentFragmentManager
+            .beginTransaction()
+            .addToBackStack(null)
+            .replace(R.id.fragmentContainer, fragment)
+            .commit()
+    }
 
 
 //        setFragmentResultListener(

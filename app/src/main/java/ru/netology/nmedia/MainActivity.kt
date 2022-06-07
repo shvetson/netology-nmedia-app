@@ -14,9 +14,12 @@ class MainActivity : AppCompatActivity(), Navigator {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater).also { setContentView(it.root) }
+        binding.toolbar.title = getString(R.string.app_name)
+        setSupportActionBar(binding.toolbar)
 
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
+            supportFragmentManager
+                .beginTransaction()
                 .add(R.id.fragmentContainer, PostsListFragment())
                 .commit()
         }
@@ -41,6 +44,4 @@ class MainActivity : AppCompatActivity(), Navigator {
         onBackPressed()
         return true
     }
-
-
 }

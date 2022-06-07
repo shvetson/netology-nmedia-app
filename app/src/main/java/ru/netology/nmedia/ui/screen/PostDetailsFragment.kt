@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import ru.netology.nmedia.databinding.FragmentPostDetailsBinding
 import ru.netology.nmedia.util.factory
 import ru.netology.nmedia.util.navigator
@@ -42,18 +41,19 @@ class PostDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentPostDetailsBinding.inflate(inflater, container, false)
-        viewModel.postDetails.observe(viewLifecycleOwner, Observer {
-
+        viewModel.postDetails.observe(viewLifecycleOwner) {
             with(binding) {
                 postAuthorTextView.text = it.author
-                postCreatedTextView.text = SimpleDateFormat("dd MMM yyyy в hh:mm").format(it.created)
+                postCreatedTextView.text =
+                    SimpleDateFormat("dd MMM yyyy в hh:mm").format(it.created)
                 postContentTextView.text = it.content
                 postVideoTextView.text = it.video
+
+                okButton.setOnClickListener {
+                    navigator().goBack()
+                }
             }
-            binding.okButton.setOnClickListener {
-                navigator().goBack()
-            }
-        })
+        }
         return binding.root
     }
 }
