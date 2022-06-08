@@ -14,17 +14,17 @@ class PostDetailsViewModel(
     private val _postDetails = MutableLiveData<Post>()
     val postDetails: LiveData<Post> = _postDetails
 
-    fun loadPost(postId: String?) {
+    fun loadPost(post: Post?) {
         if (_postDetails.value != null) return
         try {
-            _postDetails.value = repository.getId(postId!!)
+            _postDetails.value = post!!
         } catch (e: PostNotFoundException) {
             e.printStackTrace()
         }
     }
 
-    fun deletePost() {
-        val postDetails: Post = this.postDetails.value ?: return
-        repository.delete(postDetails)
-    }
+//    fun deletePost() {
+//        val postDetails: Post = this.postDetails.value ?: return
+//        repository.delete(postDetails)
+//    }
 }

@@ -23,5 +23,7 @@
     <string name="menu_item_move_down">Перемещение вниз</string>
     <string name="menu_item_delete">Удаление</string>
     <string name="menu_item_update_date">Обновление даты</string>
+    <string name="details">Подробности о посте</string>
+    <string name="done">Выполнено</string>
 
 </resources>

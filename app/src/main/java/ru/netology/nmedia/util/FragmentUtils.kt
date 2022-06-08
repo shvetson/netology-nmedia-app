@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import ru.netology.nmedia.App
-import ru.netology.nmedia.Navigator
+import ru.netology.nmedia.ui.contract.Navigator
 import ru.netology.nmedia.viewModel.PostDetailsViewModel
 import ru.netology.nmedia.viewModel.PostsListViewModel
 

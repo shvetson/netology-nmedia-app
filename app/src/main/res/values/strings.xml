@@ -22,4 +22,6 @@
     <string name="menu_item_move_down">Move Down</string>
     <string name="menu_item_delete">Delete</string>
     <string name="menu_item_update_date">Correct Date</string>
+    <string name="details">Post details</string>
+    <string name="done">Done</string>
 </resources>

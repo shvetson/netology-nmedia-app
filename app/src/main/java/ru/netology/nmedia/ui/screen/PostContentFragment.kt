@@ -1,4 +1,4 @@
-package ru.netology.nmedia.ui
+package ru.netology.nmedia.ui.screen
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,14 +11,13 @@ import ru.netology.nmedia.util.navigator
 
 class PostContentFragment : Fragment() {
     lateinit var binding: FragmentPostContentBinding
-    lateinit var post:Post
-//    private val args by navArgs<PostContentFragmentArgs>()
+    lateinit var post: Post
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        post = savedInstanceState?.getParcelable<Post>(KEY_POST) ?:
-                arguments?.getParcelable(ARG_POST) ?:
-                throw IllegalArgumentException("You need to specify options to launch this fragment")
+        post =
+            savedInstanceState?.getParcelable<Post>(KEY_POST) ?: arguments?.getParcelable(ARG_POST)
+                    ?: throw IllegalArgumentException("You need to specify options to launch this fragment")
     }
 
     override fun onCreateView(
@@ -43,11 +42,8 @@ class PostContentFragment : Fragment() {
 //        val text = binding.editEditText.text
 //
 //        if (!text.isNullOrBlank()) {
-//            val resultBundle = Bundle(1)
-//            resultBundle.putString(RESULT_KEY, text.toString())
-//            setFragmentResult(REQUEST_KEY, resultBundle)
+//
 //        }
-//        findNavController().popBackStack()
 //    }
 
     private fun get(): Post? {
@@ -58,7 +54,7 @@ class PostContentFragment : Fragment() {
         const val ARG_POST = "ARG_POST"
         const val KEY_POST = "KEY_POST"
 
-        fun newInstance(post: Post): PostContentFragment {
+        fun newInstance(post: Post?): PostContentFragment {
             val args = Bundle()
             args.putParcelable(ARG_POST, post)
             val fragment = PostContentFragment()
