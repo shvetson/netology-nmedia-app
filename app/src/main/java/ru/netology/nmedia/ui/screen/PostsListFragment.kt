@@ -103,20 +103,20 @@ class PostsListFragment : Fragment() {
             startActivity(intent)
         }
 
-//        binding.addPostButton.setOnClickListener {
-//            launchPostContent()
-//        }
+        binding.addPostButton.setOnClickListener {
+            launchPostContent()
+        }
         return binding.root
     }
 
-//    private fun launchPostContent() {
-//        val fragment = PostContentFragment.newInstance()
-//        parentFragmentManager
-//            .beginTransaction()
-//            .addToBackStack(null)
-//            .replace(R.id.fragmentContainer, fragment)
-//            .commit()
-//    }
+    private fun launchPostContent() {
+        val fragment = PostContentFragment.newInstance()
+        parentFragmentManager
+            .beginTransaction()
+            .addToBackStack(null)
+            .replace(R.id.fragmentContainer, fragment)
+            .commit()
+    }
 
 
 //        setFragmentResultListener(

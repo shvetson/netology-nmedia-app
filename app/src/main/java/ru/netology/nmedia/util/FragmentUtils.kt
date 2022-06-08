@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import ru.netology.nmedia.App
 import ru.netology.nmedia.ui.contract.Navigator
+import ru.netology.nmedia.viewModel.PostContentViewModel
 import ru.netology.nmedia.viewModel.PostDetailsViewModel
 import ru.netology.nmedia.viewModel.PostsListViewModel
 
@@ -18,6 +19,9 @@ class ViewModelFactory(
             }
             PostDetailsViewModel::class.java -> {
                 PostDetailsViewModel(app.repository)
+            }
+            PostContentViewModel::class.java -> {
+                PostContentViewModel(app.repository)
             }
             else -> {
                 throw IllegalStateException("Unknown view model class")
