@@ -24,4 +24,10 @@
     <string name="menu_item_update_date">Correct Date</string>
     <string name="details">Post details</string>
     <string name="done">Done</string>
+    <string name="new_post_label_author">Author</string>
+    <string name="new_post_label_text">Content</string>
+    <string name="new_post_label_youtube">Youtube</string>
+    <string name="new_post_hint_enter_author">Enter author name</string>
+    <string name="new_post_hint_enter_content_post">Enter post\'s content</string>
+    <string name="new_post_hint_enter_youtube_link">Enter youtube\'s link</string>
 </resources>

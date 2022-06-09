@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
+
+    <TextView
+        style="?android:listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/new_post_label_author" />
+
+    <EditText
+        android:id="@+id/new_post_author_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:hint="@string/new_post_hint_enter_author"
+        android:inputType="text"
+        android:lines="1" />
+
+    <TextView
+        style="?android:listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/new_post_label_text" />
+
+    <EditText
+        android:id="@+id/new_post_content_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/new_post_hint_enter_content_post"
+        android:inputType="text"
+        android:scrollbars="vertical" />
+
+    <TextView
+        style="?android:listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/new_post_label_youtube" />
+
+    <EditText
+        android:id="@+id/new_post_video_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:autofillHints="www.youtube.com/"
+        android:ellipsize="end"
+        android:hint="@string/new_post_hint_enter_youtube_link"
+        android:inputType="textWebEditText"
+        android:lines="1"
+        tools:text="www.youtube.com/video" />
+
+    <Button
+        android:id="@+id/new_post_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Wed Nov 14 11:56 2021" />
+
+</LinearLayout>

@@ -25,5 +25,11 @@
     <string name="menu_item_update_date">Обновление даты</string>
     <string name="details">Подробности о посте</string>
     <string name="done">Выполнено</string>
+    <string name="new_post_label_author">Автор</string>
+    <string name="new_post_label_text">Пост</string>
+    <string name="new_post_label_youtube">Youtube хостинг</string>
+    <string name="new_post_hint_enter_author">Введите имя автора поста</string>
+    <string name="new_post_hint_enter_content_post">Введите текст поста</string>
+    <string name="new_post_hint_enter_youtube_link">Введите ссылку на youtube хостинг</string>
 
 </resources>
