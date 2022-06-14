@@ -9,6 +9,7 @@ import ru.netology.nmedia.model.Post
 
 interface Navigator {
     fun showDetails(post : Post)
+    fun showNewPost()
     fun goBack()
     fun toast(messageRes : Int)
 }

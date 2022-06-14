@@ -57,8 +57,8 @@ class PostsListFragment : Fragment() {
                 navigator().showDetails(post)
             }
 
-            override fun onUpdateDateClicked(post: Post) {
-                viewModel.onUpdateDateClicked(post)
+            override fun onUpdateClicked(post: Post) {
+                viewModel.onUpdateClicked(post)
             }
 
             override fun onYouTubeClicked(post: Post) {
@@ -104,18 +104,9 @@ class PostsListFragment : Fragment() {
         }
 
         binding.addPostButton.setOnClickListener {
-            launchPostContent()
+            navigator().showNewPost()
         }
         return binding.root
-    }
-
-    private fun launchPostContent() {
-        val fragment = PostContentFragment.newInstance()
-        parentFragmentManager
-            .beginTransaction()
-            .addToBackStack(null)
-            .replace(R.id.fragmentContainer, fragment)
-            .commit()
     }
 
 

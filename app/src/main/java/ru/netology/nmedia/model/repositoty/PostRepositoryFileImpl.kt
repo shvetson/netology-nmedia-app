@@ -60,14 +60,15 @@ class PostRepositoryFileImpl : PostRepository {
         }
     }
 
-    override fun updateDate(post: Post) {
-        val curIndex = posts.indexOfFirst { it.id == post.id }
-        if (curIndex == -1) return
-        val newPost = post.copy(created = Date().time)
-        posts = ArrayList(posts)
-        posts[curIndex] = newPost
-        notifyChanges()
-    }
+//    Удалить после проверки работы функции save - update
+//    override fun updateDate(post: Post) {
+//        val curIndex = posts.indexOfFirst { it.id == post.id }
+//        if (curIndex == -1) return
+//        val newPost = post.copy(created = Date().time)
+//        posts = ArrayList(posts)
+//        posts[curIndex] = newPost
+//        notifyChanges()
+//    }
 
     override fun like(post: Post) {
         val curIndex = posts.indexOfFirst { it.id == post.id }

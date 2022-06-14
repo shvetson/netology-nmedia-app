@@ -143,8 +143,8 @@ class PostAdapter(
         ).apply {
             isEnabled = position < posts.size - 1
         }
+        popupMenu.menu.add(0, ID_UPDATE, Menu.NONE, context.getString(R.string.menu_item_edit))
         popupMenu.menu.add(0, ID_REMOVE, Menu.NONE, context.getString(R.string.menu_item_delete))
-        popupMenu.menu.add(0, ID_UPDATE_DATE, Menu.NONE, context.getString(R.string.menu_item_update_date))
 
         popupMenu.setOnMenuItemClickListener {
             when (it.itemId) {
@@ -154,11 +154,11 @@ class PostAdapter(
                 ID_MOVE_DOWN -> {
                     actionListener.onMoveClicked(post, 1)
                 }
+                ID_UPDATE -> {
+                    actionListener.onUpdateClicked(post)
+                }
                 ID_REMOVE -> {
                     actionListener.onRemoveClicked(post)
-                }
-                ID_UPDATE_DATE -> {
-                    actionListener.onUpdateDateClicked(post)
                 }
             }
             return@setOnMenuItemClickListener true
@@ -170,6 +170,6 @@ class PostAdapter(
         private const val ID_MOVE_UP = 1
         private const val ID_MOVE_DOWN = 2
         private const val ID_REMOVE = 3
-        private const val ID_UPDATE_DATE = 4
+        private const val ID_UPDATE = 4
     }
 }

@@ -10,7 +10,7 @@ interface PostRepository {
     fun move(post: Post, moveBy: Int)
     fun save(post: Post)
 
-    fun updateDate(post: Post) // TODO
+//    fun updateDate(post: Post) // TODO
 
     fun like(post: Post)
     fun share(post: Post)

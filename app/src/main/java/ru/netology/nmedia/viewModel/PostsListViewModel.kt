@@ -74,8 +74,8 @@ class PostsListViewModel(
 
     fun onRemoveClicked(post: Post) = repository.delete(post)
 
-    fun onUpdateDateClicked(post: Post) {
-        repository.updateDate(post)
+    fun onUpdateClicked(post: Post) {
+        repository.save(post)
     }
 
     fun onPostDetailsClicked(post: Post) {
