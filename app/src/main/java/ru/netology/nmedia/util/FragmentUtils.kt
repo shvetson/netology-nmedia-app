@@ -7,6 +7,7 @@ import ru.netology.nmedia.App
 import ru.netology.nmedia.ui.contract.Navigator
 import ru.netology.nmedia.viewModel.PostContentViewModel
 import ru.netology.nmedia.viewModel.PostDetailsViewModel
+import ru.netology.nmedia.viewModel.PostEditViewModel
 import ru.netology.nmedia.viewModel.PostsListViewModel
 
 class ViewModelFactory(
@@ -22,6 +23,9 @@ class ViewModelFactory(
             }
             PostContentViewModel::class.java -> {
                 PostContentViewModel(app.repository)
+            }
+            PostEditViewModel::class.java -> {
+                PostEditViewModel(app.repository)
             }
             else -> {
                 throw IllegalStateException("Unknown view model class")

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.model.repositoty.PostRepository
 import ru.netology.nmedia.model.repositoty.PostsListener
+import ru.netology.nmedia.ui.contract.Navigator
 import java.util.*
 
 class PostsListViewModel(
@@ -75,7 +76,7 @@ class PostsListViewModel(
     fun onRemoveClicked(post: Post) = repository.delete(post)
 
     fun onUpdateClicked(post: Post) {
-        repository.save(post)
+        //repository.save(post)
     }
 
     fun onPostDetailsClicked(post: Post) {

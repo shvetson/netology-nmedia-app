@@ -12,6 +12,7 @@ import ru.netology.nmedia.ui.contract.HasCustomTitle
 import ru.netology.nmedia.ui.contract.Navigator
 import ru.netology.nmedia.ui.screen.PostContentFragment
 import ru.netology.nmedia.ui.screen.PostDetailsFragment
+import ru.netology.nmedia.ui.screen.PostEditFragment
 import ru.netology.nmedia.ui.screen.PostsListFragment
 
 class MainActivity : AppCompatActivity(), Navigator {
@@ -65,6 +66,14 @@ class MainActivity : AppCompatActivity(), Navigator {
             .beginTransaction()
             .addToBackStack(null)
             .replace(R.id.fragmentContainer, PostContentFragment.newInstance())
+            .commit()
+    }
+
+    override fun showEditPost(post: Post) {
+        supportFragmentManager
+            .beginTransaction()
+            .addToBackStack(null)
+            .replace(R.id.fragmentContainer, PostEditFragment.newInstance(post))
             .commit()
     }
 

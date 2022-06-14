@@ -58,7 +58,8 @@ class PostsListFragment : Fragment() {
             }
 
             override fun onUpdateClicked(post: Post) {
-                viewModel.onUpdateClicked(post)
+                navigator().showEditPost(post)
+//                viewModel.onUpdateClicked(post)
             }
 
             override fun onYouTubeClicked(post: Post) {
