@@ -1,8 +1,14 @@
 package ru.netology.nmedia.model.repositoty
 
+import androidx.lifecycle.LiveData
 import ru.netology.nmedia.model.Post
+import ru.netology.nmedia.model.impl.PostsListener
 
 interface PostRepository {
+//    val data: LiveData<Post>
+
+//    fun get(): LiveData<Post>
+
     fun getAll(): List<Post>
     fun getId(postId: String): Post
 

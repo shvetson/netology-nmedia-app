@@ -5,10 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.netology.nmedia.model.Post
+import ru.netology.nmedia.model.impl.PostsListener
 import ru.netology.nmedia.model.repositoty.PostRepository
-import ru.netology.nmedia.model.repositoty.PostsListener
-import ru.netology.nmedia.ui.contract.Navigator
-import java.util.*
 
 class PostsListViewModel(
     private val repository: PostRepository

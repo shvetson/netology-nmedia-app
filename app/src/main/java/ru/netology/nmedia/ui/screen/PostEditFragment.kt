@@ -8,26 +8,27 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import ru.netology.nmedia.R
-import ru.netology.nmedia.databinding.FragmentPostContentBinding
 import ru.netology.nmedia.databinding.FragmentPostEditBinding
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.ui.contract.HasCustomTitle
 import ru.netology.nmedia.util.factory
 import ru.netology.nmedia.util.navigator
-import ru.netology.nmedia.viewModel.PostContentViewModel
 import ru.netology.nmedia.viewModel.PostEditViewModel
-import java.text.SimpleDateFormat
 
 class PostEditFragment : Fragment(), HasCustomTitle {
     private lateinit var binding: FragmentPostEditBinding
     private val viewModel: PostEditViewModel by viewModels { factory() }
+//    Не работает тк в конструктор viewModel передается аргумент - репозиторий, без него можно
+//    private val viewModel by viewModels<PostEditViewModel>()
 
     override fun getTitleRes(): Int = R.string.title_edit_post
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.loadPost(requireArguments().getParcelable<Post>(ARG_POST))
+//        requireArguments().getParcelable<Post>(ARG_POST)?.let { postEditViewModel.loadPost(it) }
+        viewModel.loadPost(requireArguments().getParcelable<Post>(ARG_POST)!!)
     }
 
     override fun onCreateView(
@@ -37,29 +38,31 @@ class PostEditFragment : Fragment(), HasCustomTitle {
     ): View {
         binding = FragmentPostEditBinding.inflate(inflater, container, false)
 
-        viewModel.post.observe(viewLifecycleOwner) {
-            with(binding) {
-                postAuthorEditText.setText(it.author)
-                postContentEditText.setText(it.content)
+        viewModel.data.observe(viewLifecycleOwner, Observer<Post> { post -> render(post) })
+        requestFocusAndShowSoftInput(binding.postContentEditText)
 
-                requestFocusAndShowSoftInput(binding.postAuthorEditText)
-
-                binding.okButton.setOnClickListener {
-
-                    navigator().goBack()
-                }
-            }
+        binding.okButton.setOnClickListener {
+            onOkButtonClicked()
+            navigator().goBack()
         }
         return binding.root
     }
 
-//    private fun onOkButtonClicked() {
-//        viewModel.onSaveClicked(
-//            author = binding.postAuthorEditText.text.toString(),
-//            content = binding.postContentEditText.text.toString(),
-//            video = binding.postVideoEditText.text.toString()
-//        )
-//    }
+    private fun render(post: Post) {
+        with(binding) {
+            postAuthorEditText.setText(post.author)
+            postContentEditText.setText(post.content)
+            postVideoEditText.setText(post.video)
+        }
+    }
+
+    private fun onOkButtonClicked() {
+        viewModel.savePost(
+            author = binding.postAuthorEditText.text.toString(),
+            content = binding.postContentEditText.text.toString(),
+            video = binding.postVideoEditText.text.toString()
+        )
+    }
 
     companion object {
         private const val ARG_POST = "ARG_POST"

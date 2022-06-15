@@ -1,10 +1,12 @@
-package ru.netology.nmedia.model.repositoty
+package ru.netology.nmedia.model.impl
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.github.javafaker.Faker
 import ru.netology.nmedia.PostNotFoundException
 import ru.netology.nmedia.model.Post
+import ru.netology.nmedia.model.repositoty.PostRepository
 import java.util.*
-import kotlin.collections.ArrayList
 
 typealias PostsListener = (posts: List<Post>) -> Unit
 
@@ -27,6 +29,11 @@ class PostRepositoryFileImpl : PostRepository {
         }
         posts = generatedPosts.toMutableList()
     }
+
+//    private val data = MutableLiveData<Post>()
+//    override fun get(): LiveData<Post> {
+//        return data
+//    }
 
     override fun getAll(): List<Post> {
         return posts
@@ -71,11 +78,17 @@ class PostRepositoryFileImpl : PostRepository {
 //    }
 
     override fun like(post: Post) {
+//        val currentPost = checkNotNull(data.value) { "Data value should be not null!"}
+
+
         val curIndex = posts.indexOfFirst { it.id == post.id }
         if (curIndex != -1) {
             val updatedPost: Post = post.copy(like = getLikeCount(post), likeFlag = !post.likeFlag)
             updatePostsList(curIndex, updatedPost)
+
+//            data.value = updatedPost
         }
+
     }
 
     private fun getLikeCount(post: Post) =

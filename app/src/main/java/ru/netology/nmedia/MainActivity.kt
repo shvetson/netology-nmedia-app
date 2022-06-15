@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity(), Navigator {
         supportFragmentManager
             .beginTransaction()
             .addToBackStack(null)
-            .replace(R.id.fragmentContainer, PostEditFragment.newInstance(post))
+            .replace(R.id.fragmentContainer, PostEditFragment.newInstance(post = post))
             .commit()
     }
 

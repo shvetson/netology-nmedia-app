@@ -2,7 +2,6 @@ package ru.netology.nmedia.ui.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.ItemPostBinding
 import ru.netology.nmedia.model.Post
-import ru.netology.nmedia.model.repositoty.PostRepositoryFileImpl
 import ru.netology.nmedia.ui.listener.PostActionListener
 import ru.netology.nmedia.util.Utils
 import java.text.SimpleDateFormat
