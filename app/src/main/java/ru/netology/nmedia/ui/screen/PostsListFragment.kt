@@ -57,8 +57,8 @@ class PostsListFragment : Fragment() {
                 navigator().showDetails(post)
             }
 
-            override fun onUpdateClicked(post: Post) {
-                navigator().showEditPost(post)
+            override fun onUpdateClicked(postId: String) {
+                navigator().showEditPost(postId)
 //                viewModel.onUpdateClicked(post)
             }
 
@@ -67,8 +67,8 @@ class PostsListFragment : Fragment() {
             }
         })
 
-        viewModel.posts.observe(viewLifecycleOwner) {
-            adapter.posts = it
+        viewModel.posts.observe(viewLifecycleOwner) { listPosts ->
+            adapter.posts = listPosts
         }
 
         val layoutManager = LinearLayoutManager(requireContext())

@@ -69,11 +69,11 @@ class MainActivity : AppCompatActivity(), Navigator {
             .commit()
     }
 
-    override fun showEditPost(post: Post) {
+    override fun showEditPost(postId: String) {
         supportFragmentManager
             .beginTransaction()
             .addToBackStack(null)
-            .replace(R.id.fragmentContainer, PostEditFragment.newInstance(post = post))
+            .replace(R.id.fragmentContainer, PostEditFragment.newInstance(postId = postId))
             .commit()
     }
 

@@ -39,7 +39,7 @@ class PostRepositoryFileImpl : PostRepository {
         return posts
     }
 
-    override fun getId(postId: String): Post {
+    override fun getById(postId: String): Post {
         return posts.firstOrNull { it.id == postId } ?: throw PostNotFoundException()
     }
 

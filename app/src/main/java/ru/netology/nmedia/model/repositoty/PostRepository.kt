@@ -10,7 +10,7 @@ interface PostRepository {
 //    fun get(): LiveData<Post>
 
     fun getAll(): List<Post>
-    fun getId(postId: String): Post
+    fun getById(postId: String): Post
 
     fun delete(post: Post)
     fun move(post: Post, moveBy: Int)

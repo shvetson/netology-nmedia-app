@@ -153,8 +153,7 @@ class PostAdapter(
                     actionListener.onMoveClicked(post, 1)
                 }
                 ID_UPDATE -> {
-                    actionListener.onUpdateClicked(post)
-
+                    actionListener.onUpdateClicked(post.id)
                 }
                 ID_REMOVE -> {
                     actionListener.onRemoveClicked(post)

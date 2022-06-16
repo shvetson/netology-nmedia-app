@@ -28,7 +28,7 @@ class PostEditFragment : Fragment(), HasCustomTitle {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        requireArguments().getParcelable<Post>(ARG_POST)?.let { postEditViewModel.loadPost(it) }
-        viewModel.loadPost(requireArguments().getParcelable<Post>(ARG_POST)!!)
+        viewModel.loadPost(requireArguments().getString(ARG_POST_ID)!!)
     }
 
     override fun onCreateView(
@@ -65,12 +65,12 @@ class PostEditFragment : Fragment(), HasCustomTitle {
     }
 
     companion object {
-        private const val ARG_POST = "ARG_POST"
+        private const val ARG_POST_ID = "ARG_POST_ID"
 
-        fun newInstance(post: Post): PostEditFragment {
+        fun newInstance(postId: String): PostEditFragment {
             val fragment = PostEditFragment()
             val args = Bundle()
-            args.putParcelable(ARG_POST, post)
+            args.putString(ARG_POST_ID, postId)
             fragment.arguments = args
             return fragment
         }
