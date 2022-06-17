@@ -5,12 +5,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.netology.nmedia.PostNotFoundException
 import ru.netology.nmedia.model.Post
+import ru.netology.nmedia.model.impl.PostRepositoryFileImpl
 import ru.netology.nmedia.model.repositoty.PostRepository
 import java.util.*
 
 class PostEditViewModel(
     private val repository: PostRepository
 ) : ViewModel() {
+
+//    private val _post: MutableLiveData<Post> by lazy {
+//        MutableLiveData<Post>()
+//    }
 
     private val _post = MutableLiveData<Post>()
     val data: LiveData<Post> = _post
