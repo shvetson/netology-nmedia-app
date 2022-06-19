@@ -5,9 +5,7 @@ import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.model.impl.PostsListener
 
 interface PostRepository {
-//    val data: LiveData<Post>
-
-//    fun get(): LiveData<Post>
+    val data: LiveData<List<Post>>
 
     fun getAll(): List<Post>
     fun getById(postId: String): Post
@@ -15,8 +13,6 @@ interface PostRepository {
     fun delete(post: Post)
     fun move(post: Post, moveBy: Int)
     fun save(post: Post)
-
-//    fun updateDate(post: Post) // TODO
 
     fun like(post: Post)
     fun share(post: Post)

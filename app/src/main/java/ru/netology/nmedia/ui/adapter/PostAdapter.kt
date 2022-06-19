@@ -13,41 +13,55 @@ import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.ItemPostBinding
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.ui.listener.PostActionListener
-import ru.netology.nmedia.util.Utils
+import ru.netology.nmedia.util.Utils.formatValue
 import java.text.SimpleDateFormat
 
-class PostsDiffCallback(
-    private val oldList: List<Post>,
-    private val newList: List<Post>
-) : DiffUtil.Callback() {
-
-    override fun getOldListSize(): Int = oldList.size
-    override fun getNewListSize(): Int = newList.size
-
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldPost: Post = oldList[oldItemPosition]
-        val newPost: Post = newList[newItemPosition]
-        return oldPost.id == newPost.id
-    }
-
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldPost: Post = oldList[oldItemPosition]
-        val newPost: Post = newList[newItemPosition]
-        return oldPost == newPost
-    }
-}
-
-class PostAdapter(
+internal class PostAdapter(
     private val actionListener: PostActionListener
 ) : RecyclerView.Adapter<PostAdapter.PostViewHolder>(), View.OnClickListener {
 
+    //3. Прописать список постов
     var posts: List<Post> = emptyList()
+        //Прописать DiffUtil
         set(newValue) {
             val diffCallback = PostsDiffCallback(field, newValue)
             val diffResult = DiffUtil.calculateDiff(diffCallback)
             field = newValue
             diffResult.dispatchUpdatesTo(this)
         }
+
+    //1. Определить ViewHolder
+    inner class PostViewHolder(
+        private val binding: ItemPostBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        //2. Добавить функцию по отрисовке
+        @SuppressLint("SimpleDateFormat")
+        fun bind(post: Post) {
+            with(binding) {
+
+                // Прописываем в тэгах какой элемент списка был выбран
+                itemView.tag = post
+                optionsButton.tag = post
+                postLikeButton.tag = post
+                postShareButton.tag = post
+                postViewButton.tag = post
+                videoImageView.tag = post
+
+                postAuthorTextView.text = post.author
+                postCreatedTextView.text =
+                    SimpleDateFormat("dd MMM yyyy в hh:mm").format(post.created)
+                postContentTextView.text = post.content
+                postLikeButton.isChecked = post.likeFlag
+                postLikeButton.text = formatValue(post.like)
+                postShareButton.text = formatValue(post.share)
+                postViewButton.text = formatValue(post.view)
+
+                if (post.video == null) videoImageView.visibility = View.INVISIBLE
+                else videoImageView.visibility = View.VISIBLE
+            }
+        }
+    }
 
     override fun onClick(view: View) {
         // Считываем из тэга какой элемент списка был выбран
@@ -70,17 +84,15 @@ class PostAdapter(
                 actionListener.onYouTubeClicked(post)
             }
             else -> {
-                actionListener.onPostDetailsClicked(post)
+                actionListener.onPostDetailsClicked(post.id)
             }
         }
     }
 
-    class PostViewHolder(
-        val binding: ItemPostBinding
-    ) : RecyclerView.ViewHolder(binding.root)
-
+    //4.1 Имплементация трех методов
     override fun getItemCount(): Int = posts.size
 
+    //4.2 Имплементация трех методов
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemPostBinding.inflate(inflater, parent, false)
@@ -96,34 +108,10 @@ class PostAdapter(
         return PostViewHolder(binding)
     }
 
+    //4.3 Имплементация трех методов
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = posts[position]
-        bind(holder, post)
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    private fun bind(holder: PostViewHolder, post: Post) {
-        with(holder.binding) {
-
-            // Прописываем в тэгах какой элемент списка был выбран
-            holder.itemView.tag = post
-            optionsButton.tag = post
-            postLikeButton.tag = post
-            postShareButton.tag = post
-            postViewButton.tag = post
-            videoImageView.tag = post
-
-            postAuthorTextView.text = post.author
-            postCreatedTextView.text = SimpleDateFormat("dd MMM yyyy в hh:mm").format(post.created)
-            postContentTextView.text = post.content
-            postLikeButton.isChecked = post.likeFlag
-            postLikeButton.text = Utils.formatValue(post.like)
-            postShareButton.text = Utils.formatValue(post.share)
-            postViewButton.text = Utils.formatValue(post.view)
-
-            if (post.video == null) videoImageView.visibility = View.INVISIBLE
-            else videoImageView.visibility = View.VISIBLE
-        }
+        holder.bind(post)
     }
 
     private fun showPopupMenu(view: View) {
@@ -169,5 +157,26 @@ class PostAdapter(
         private const val ID_MOVE_DOWN = 2
         private const val ID_REMOVE = 3
         private const val ID_UPDATE = 4
+    }
+}
+
+class PostsDiffCallback(
+    private val oldList: List<Post>,
+    private val newList: List<Post>
+) : DiffUtil.Callback() {
+
+    override fun getOldListSize(): Int = oldList.size
+    override fun getNewListSize(): Int = newList.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldPost: Post = oldList[oldItemPosition]
+        val newPost: Post = newList[newItemPosition]
+        return oldPost.id == newPost.id
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldPost: Post = oldList[oldItemPosition]
+        val newPost: Post = newList[newItemPosition]
+        return oldPost == newPost
     }
 }

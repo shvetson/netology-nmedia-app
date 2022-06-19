@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,16 +16,31 @@ import ru.netology.nmedia.databinding.FragmentPostsListBinding
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.ui.adapter.PostAdapter
 import ru.netology.nmedia.ui.listener.PostActionListener
-import ru.netology.nmedia.util.factory
-import ru.netology.nmedia.util.navigator
 import ru.netology.nmedia.viewModel.PostsListViewModel
 
-class PostsListFragment : Fragment() {
+class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
 
     private lateinit var binding: FragmentPostsListBinding
     private lateinit var adapter: PostAdapter
 
-    private val viewModel: PostsListViewModel by viewModels { factory() }
+    private val viewModel: PostsListViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+//        viewModel.loadPosts()
+
+        setFragmentResultListener(requestKey = PostContentFragment.REQUEST_KEY) { requestKey, bundle ->
+            if (requestKey != PostContentFragment.REQUEST_KEY) return@setFragmentResultListener
+            val newPost = bundle.getParcelable<Post>(PostContentFragment.RESULT_KEY) ?: return@setFragmentResultListener
+            viewModel.onSaveClicked(newPost)
+        }
+
+        setFragmentResultListener(requestKey = PostEditFragment.REQUEST_KEY) { requestKey, bundle ->
+            if (requestKey != PostEditFragment.REQUEST_KEY) return@setFragmentResultListener
+            val updatedPost = bundle.getParcelable<Post>(PostEditFragment.RESULT_KEY) ?: return@setFragmentResultListener
+            viewModel.onSaveClicked(updatedPost)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,14 +69,12 @@ class PostsListFragment : Fragment() {
                 viewModel.onMoveClicked(post, moveBy)
             }
 
-            override fun onPostDetailsClicked(post: Post) {
-                navigator().showDetails(post)
+            override fun onPostDetailsClicked(postId: String) {
+                createFragmentByReplace(R.id.fragmentContainer, PostDetailsFragment.newInstance(postId = postId))
             }
 
             override fun onUpdateClicked(postId: String) {
-                navigator().showEditPost(postId)
-//                viewModel.onUpdateClicked(post)
-
+                createFragmentByReplace(R.id.fragmentContainer, PostEditFragment.newInstance(postId = postId))
             }
 
             override fun onYouTubeClicked(post: Post) {
@@ -68,19 +82,24 @@ class PostsListFragment : Fragment() {
             }
         })
 
-        viewModel.posts.observe(viewLifecycleOwner) { listPosts ->
-            adapter.posts = listPosts
-        }
+        binding.postsRecyclerView.adapter = adapter
 
         val layoutManager = LinearLayoutManager(requireContext())
         binding.postsRecyclerView.layoutManager = layoutManager
-        binding.postsRecyclerView.adapter = adapter
+
+        viewModel.data.observe(viewLifecycleOwner) { it ->
+            adapter.posts = it
+        }
 
         // Отключение "мерцания" элемента списка при обновлении одного из полей,
         // но это никак не отразится на анимации при перемещении и удалении элемента списка
         val itemAnimator = binding.postsRecyclerView.itemAnimator
         if (itemAnimator is DefaultItemAnimator) {
             itemAnimator.supportsChangeAnimations = false
+        }
+
+        binding.addPostButton.setOnClickListener {
+            createFragmentByReplace(R.id.fragmentContainer, PostContentFragment.newInstance())
         }
 
         viewModel.onShareContent.observe(viewLifecycleOwner) { content ->
@@ -104,21 +123,14 @@ class PostsListFragment : Fragment() {
             }
             startActivity(intent)
         }
-
-        binding.addPostButton.setOnClickListener {
-            navigator().showNewPost()
-        }
         return binding.root
     }
 
-
-//        setFragmentResultListener(
-//            requestKey = PostContentFragment.REQUEST_KEY
-//        ) { requestKey, bundle ->
-//            if (requestKey != PostContentFragment.REQUEST_KEY) return@setFragmentResultListener
-//            val newPostContent = bundle.getString(PostContentFragment.RESULT_KEY)
-//                ?: return@setFragmentResultListener
-//            viewModel.onSaveClicked(newPostContent)
-//        }
-
+    private fun createFragmentByReplace(fragmentContainer: Int, fragment: Fragment) {
+        requireActivity().supportFragmentManager
+            .beginTransaction()
+            .addToBackStack(null)
+            .replace(fragmentContainer, fragment)
+            .commit()
+    }
 }

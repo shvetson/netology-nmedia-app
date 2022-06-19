@@ -8,7 +8,7 @@ import ru.netology.nmedia.model.Post
 //}
 
 interface Navigator {
-    fun showDetails(post : Post)
+    fun showDetails(postId : String)
     fun showNewPost()
     fun showEditPost(postId: String)
     fun goBack()

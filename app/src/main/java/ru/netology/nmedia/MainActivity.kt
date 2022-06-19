@@ -2,20 +2,14 @@ package ru.netology.nmedia
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import ru.netology.nmedia.databinding.ActivityMainBinding
-import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.ui.contract.HasCustomTitle
-import ru.netology.nmedia.ui.contract.Navigator
-import ru.netology.nmedia.ui.screen.PostContentFragment
-import ru.netology.nmedia.ui.screen.PostDetailsFragment
-import ru.netology.nmedia.ui.screen.PostEditFragment
 import ru.netology.nmedia.ui.screen.PostsListFragment
 
-class MainActivity : AppCompatActivity(), Navigator {
+class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private val currentFragment: Fragment
@@ -51,38 +45,6 @@ class MainActivity : AppCompatActivity(), Navigator {
     override fun onDestroy() {
         super.onDestroy()
         supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentListener)
-    }
-
-    override fun showDetails(post: Post) {
-        supportFragmentManager
-            .beginTransaction()
-            .addToBackStack(null)
-            .replace(R.id.fragmentContainer, PostDetailsFragment.newInstance(post = post))
-            .commit()
-    }
-
-    override fun showNewPost() {
-        supportFragmentManager
-            .beginTransaction()
-            .addToBackStack(null)
-            .replace(R.id.fragmentContainer, PostContentFragment.newInstance())
-            .commit()
-    }
-
-    override fun showEditPost(postId: String) {
-        supportFragmentManager
-            .beginTransaction()
-            .addToBackStack(null)
-            .replace(R.id.fragmentContainer, PostEditFragment.newInstance(postId = postId))
-            .commit()
-    }
-
-    override fun goBack() {
-        onBackPressed()
-    }
-
-    override fun toast(messageRes: Int) {
-        Toast.makeText(this, messageRes, Toast.LENGTH_SHORT).show()
     }
 
     override fun onSupportNavigateUp(): Boolean {

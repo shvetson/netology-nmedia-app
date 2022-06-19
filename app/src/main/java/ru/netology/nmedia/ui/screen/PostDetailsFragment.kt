@@ -11,21 +11,32 @@ import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostDetailsBinding
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.ui.contract.HasCustomTitle
-import ru.netology.nmedia.util.factory
-import ru.netology.nmedia.util.navigator
 import ru.netology.nmedia.viewModel.PostDetailsViewModel
 import java.text.SimpleDateFormat
 
-class PostDetailsFragment : Fragment(), HasCustomTitle {
+class PostDetailsFragment : Fragment(R.layout.fragment_post_details), HasCustomTitle {
 
     private lateinit var binding: FragmentPostDetailsBinding
-    private val viewModel: PostDetailsViewModel by viewModels { factory() }
+    private val viewModel: PostDetailsViewModel by viewModels()
+
+    companion object {
+        private const val ARG_POST_ID = "ARG_POST_ID"
+
+        fun newInstance(postId: String): PostDetailsFragment {
+            val fragment = PostDetailsFragment()
+            val args = Bundle()
+            args.putString(ARG_POST_ID, postId)
+            fragment.arguments = args
+//            fragment.arguments = bundleOf(ARG_POST to post)
+            return fragment
+        }
+    }
 
     override fun getTitleRes(): Int = R.string.details
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.loadPost(requireArguments().getParcelable<Post>(ARG_POST))
+        viewModel.loadPost(requireArguments().getString(ARG_POST_ID)!!)
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -35,37 +46,25 @@ class PostDetailsFragment : Fragment(), HasCustomTitle {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPostDetailsBinding.inflate(inflater, container, false)
+        viewModel.getPost().observe(viewLifecycleOwner) { post -> render(post) }
 
-        viewModel.postDetails.observe(viewLifecycleOwner) {
-            with(binding) {
-                postAuthorTextView.text = it.author
-                postCreatedTextView.text =
-                    SimpleDateFormat("dd MMM yyyy в hh:mm").format(it.created)
-                postContentTextView.text = it.content
-                postVideoTextView.text = it.video
-                postLikeButton.isChecked = it.likeFlag
-                postLikeButton.text = it.like.toString()
-                postShareButton.text = it.share.toString()
-                postViewButton.text = it.view.toString()
-
-                okButton.setOnClickListener {
-                    navigator().goBack()
-                }
-            }
+        binding.okButton.setOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
         }
         return binding.root
     }
 
-    companion object {
-        private const val ARG_POST = "ARG_POST"
-
-        fun newInstance(post: Post): PostDetailsFragment {
-            val fragment = PostDetailsFragment()
-            val args = Bundle()
-            args.putParcelable(ARG_POST, post)
-            fragment.arguments = args
-//            fragment.arguments = bundleOf(ARG_POST to post)
-            return fragment
+    private fun render(post: Post) {
+        with(binding) {
+            postAuthorTextView.text = post.author
+            postCreatedTextView.text =
+                SimpleDateFormat("dd MMM yyyy в hh:mm").format(post.created)
+            postContentTextView.text = post.content
+            postVideoTextView.text = post.video
+            postLikeButton.isChecked = post.likeFlag
+            postLikeButton.text = post.like.toString()
+            postShareButton.text = post.share.toString()
+            postViewButton.text = post.view.toString()
         }
     }
 }

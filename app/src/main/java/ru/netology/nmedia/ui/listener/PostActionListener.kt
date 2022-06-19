@@ -9,7 +9,7 @@ interface PostActionListener {
 
     fun onRemoveClicked(post: Post)
     fun onMoveClicked(post: Post, moveBy: Int)
-    fun onPostDetailsClicked(post: Post)
+    fun onPostDetailsClicked(postId: String)
     fun onUpdateClicked(postId: String)
 
 //    fun onSaveClicked(content: String)

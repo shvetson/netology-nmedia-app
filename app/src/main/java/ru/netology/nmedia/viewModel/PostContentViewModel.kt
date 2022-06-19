@@ -1,21 +1,19 @@
 package ru.netology.nmedia.viewModel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import android.widget.Toast
+import androidx.lifecycle.AndroidViewModel
 import ru.netology.nmedia.model.Post
+import ru.netology.nmedia.model.impl.PostRepositoryFileImpl
 import ru.netology.nmedia.model.repositoty.PostRepository
 
-class PostContentViewModel(
-    private val repository: PostRepository
-) : ViewModel() {
+class PostContentViewModel(application: Application) : AndroidViewModel(application) {
+    private val repository: PostRepository = PostRepositoryFileImpl(application)
 
-//    private val _postContent = MutableLiveData<String>()
-//    val postContent: LiveData<String> = _postContent
+    fun newPost(author: String, content: String, video: String): Post? {
+        if (author.isBlank() || content.isBlank()) return null
 
-    fun onSaveClicked(author: String, content: String, video: String) {
-        if (author.isBlank() || content.isBlank()) return
-//        _postContent.value = content
-
-        val post = Post(
+        return Post(
             id = "",
             author = author,
             content = content,
@@ -24,26 +22,5 @@ class PostContentViewModel(
             share = 0,
             view = 0
         )
-        repository.save(post)
     }
-
-
-//    fun onSaveClicked(content: String) {
-//        if (content.isBlank()) return
-//
-//        val post = currentPost.value?.copy(
-//            content = content,
-//            created = Date().time,
-//        ) ?: Post(
-//            id = "",
-//            author = "Нетология",
-//            content = content,
-//            video = "https://www.youtube.com/watch?v=WhWc3b3KhnY",
-//            like = 0,
-//            share = 0,
-//            view = 0
-//        )
-//        repository.save(post)
-//        currentPost.value = null
-//    }
 }

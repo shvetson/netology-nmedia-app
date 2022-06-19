@@ -1,26 +1,35 @@
 package ru.netology.nmedia.viewModel
 
 import SingleLiveEvent
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import ru.netology.nmedia.PostNotFoundException
 import ru.netology.nmedia.model.Post
+import ru.netology.nmedia.model.impl.PostRepositoryFileImpl
 import ru.netology.nmedia.model.impl.PostsListener
 import ru.netology.nmedia.model.repositoty.PostRepository
 
-class PostsListViewModel(
-    private val repository: PostRepository
-) : ViewModel() {
+class PostsListViewModel(application: Application) : AndroidViewModel(application) {
+    private val repository: PostRepository = PostRepositoryFileImpl(application)
 
     private val _posts = MutableLiveData<List<Post>>()
-    val posts: LiveData<List<Post>> = _posts
+    val data: LiveData<List<Post>> = _posts
 
     private val listener: PostsListener = {
         _posts.value = it
     }
 
+//    val data by repository::data
+
     val onShareContent = SingleLiveEvent<String>()
     val onViewYoutubeLink = SingleLiveEvent<String>()
+
+//    fun loadPosts() {
+//        _posts.value = repository.getAll()
+//    }
 
     init {
         loadPosts()
@@ -62,6 +71,10 @@ class PostsListViewModel(
 //        repository.save(post)
 //        currentPost.value = null
 //    }
+
+    fun onSaveClicked(post: Post) {
+        repository.save(post)
+    }
 
     fun onViewClicked(post: Post) {
         repository.view(post)

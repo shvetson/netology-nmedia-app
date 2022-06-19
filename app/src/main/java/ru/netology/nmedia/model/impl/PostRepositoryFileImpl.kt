@@ -1,8 +1,10 @@
 package ru.netology.nmedia.model.impl
 
-import androidx.lifecycle.LiveData
+import android.app.Application
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
-import com.github.javafaker.Faker
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import ru.netology.nmedia.PostNotFoundException
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.model.repositoty.PostRepository
@@ -10,30 +12,40 @@ import java.util.*
 
 typealias PostsListener = (posts: List<Post>) -> Unit
 
-class PostRepositoryFileImpl : PostRepository {
-    private var posts: MutableList<Post> = mutableListOf()
+class PostRepositoryFileImpl(
+    private val application: Application
+) : PostRepository {
+
     private val listeners: MutableSet<PostsListener> = mutableSetOf()
 
-    init {
-        val faker = Faker.instance()
+    private val gson = Gson()
+    private val type = TypeToken.getParameterized(List::class.java, Post::class.java).type
 
-        val generatedPosts: List<Post> = (1..100).map {
-            Post(
-                id = UUID.randomUUID().toString(),
-                author = faker.name().name(),
-                content = faker.lorem().characters(),
-                like = Random().nextInt(1500),
-                share = Random().nextInt(1500),
-                view = Random().nextInt(15000)
-            )
-        }
-        posts = generatedPosts.toMutableList()
+    private companion object {
+        const val FILE_NAME = "posts.json"
     }
 
-//    private val data = MutableLiveData<Post>()
-//    override fun get(): LiveData<Post> {
-//        return data
-//    }
+    private var posts
+        get() = checkNotNull(data.value) {
+            "Данные не должны быть null"
+        }
+        set(newValue) {
+            application.openFileOutput(FILE_NAME, Context.MODE_PRIVATE).bufferedWriter().use {
+                it.write(gson.toJson(newValue))
+            }
+            data.value = newValue
+        }
+    override val data: MutableLiveData<List<Post>>
+
+    init {
+        val postsFile = application.filesDir.resolve(FILE_NAME)
+        val posts: List<Post> = if (postsFile.isFile) {
+            val inputStream = application.openFileInput(FILE_NAME)
+            val reader = inputStream.bufferedReader()
+            reader.use { gson.fromJson(it, type) }
+        } else emptyList()
+        data = MutableLiveData(posts)
+    }
 
     override fun getAll(): List<Post> {
         return posts
@@ -62,7 +74,7 @@ class PostRepositoryFileImpl : PostRepository {
         }
         if (curIndex != -1) {
             posts = ArrayList(posts)
-            posts.removeAt(curIndex)
+            (posts as ArrayList<Post>).removeAt(curIndex)
             notifyChanges()
         }
     }
@@ -78,17 +90,16 @@ class PostRepositoryFileImpl : PostRepository {
 //    }
 
     override fun like(post: Post) {
-//        val currentPost = checkNotNull(data.value) { "Data value should be not null!"}
+//        val curIndex = posts.indexOfFirst { it.id == post.id }
+//        if (curIndex != -1) {
+//            val updatedPost: Post = post.copy(like = getLikeCount(post), likeFlag = !post.likeFlag)
+//            updatePostsList(curIndex, updatedPost)
+//        }
 
-
-        val curIndex = posts.indexOfFirst { it.id == post.id }
-        if (curIndex != -1) {
-            val updatedPost: Post = post.copy(like = getLikeCount(post), likeFlag = !post.likeFlag)
-            updatePostsList(curIndex, updatedPost)
-
-//            data.value = updatedPost
+        data.value = posts.map {
+            if (it.id != post.id) it
+            else it.copy(like = getLikeCount(post), likeFlag = !post.likeFlag)
         }
-
     }
 
     private fun getLikeCount(post: Post) =
@@ -133,7 +144,7 @@ class PostRepositoryFileImpl : PostRepository {
 
     private fun updatePostsList(position: Int, post: Post) {
         posts = ArrayList(posts)
-        posts[position] = post
+        (posts as ArrayList<Post>)[position] = post
         notifyChanges()
     }
 

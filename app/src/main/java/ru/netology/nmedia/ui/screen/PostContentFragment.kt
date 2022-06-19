@@ -6,18 +6,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostContentBinding
 import ru.netology.nmedia.ui.contract.HasCustomTitle
-import ru.netology.nmedia.util.factory
-import ru.netology.nmedia.util.navigator
 import ru.netology.nmedia.viewModel.PostContentViewModel
 
-class PostContentFragment : Fragment(), HasCustomTitle {
+class PostContentFragment : Fragment(R.layout.fragment_post_content), HasCustomTitle {
+
     private lateinit var binding: FragmentPostContentBinding
-    private val viewModel: PostContentViewModel by viewModels { factory() }
+    private val viewModel: PostContentViewModel by viewModels()
+
+    companion object {
+        const val REQUEST_KEY = "REQUEST_KEY"
+        const val RESULT_KEY = "RESULT_KEY"
+
+        fun newInstance(): PostContentFragment {
+            return PostContentFragment()
+        }
+    }
 
     override fun getTitleRes(): Int = R.string.title_new_post
 
@@ -31,23 +41,23 @@ class PostContentFragment : Fragment(), HasCustomTitle {
 
         binding.okButton.setOnClickListener {
             onOkButtonClicked()
-            navigator().goBack()
+            requireActivity().supportFragmentManager.popBackStack()
         }
         return binding.root
     }
 
     private fun onOkButtonClicked() {
-        viewModel.onSaveClicked(
+        val newPost = viewModel.newPost(
             author = binding.postAuthorEditText.text.toString(),
             content = binding.postContentEditText.text.toString(),
             video = binding.postVideoEditText.text.toString()
+                .ifBlank { "https://www.youtube.com/watch?v=WhWc3b3KhnY" }
         )
-    }
 
-    companion object {
-        fun newInstance(): PostContentFragment {
-            return PostContentFragment()
-        }
+        setFragmentResult(
+            requestKey = REQUEST_KEY,
+            bundleOf(RESULT_KEY to newPost)
+        )
     }
 
     private fun requestFocusAndShowSoftInput(view: View) {
