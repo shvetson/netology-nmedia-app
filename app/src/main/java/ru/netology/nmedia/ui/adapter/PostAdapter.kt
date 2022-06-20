@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.ItemPostBinding
@@ -15,20 +16,26 @@ import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.ui.listener.PostActionListener
 import ru.netology.nmedia.util.Utils.formatValue
 import java.text.SimpleDateFormat
+import kotlin.properties.Delegates
 
 internal class PostAdapter(
     private val actionListener: PostActionListener
-) : RecyclerView.Adapter<PostAdapter.PostViewHolder>(), View.OnClickListener {
+//) : RecyclerView.Adapter<PostAdapter.PostViewHolder>(), View.OnClickListener {
+) : ListAdapter<Post, PostAdapter.PostViewHolder>(DiffCallback), View.OnClickListener {
 
     //3. Прописать список постов
-    var posts: List<Post> = emptyList()
-        //Прописать DiffUtil
-        set(newValue) {
-            val diffCallback = PostsDiffCallback(field, newValue)
-            val diffResult = DiffUtil.calculateDiff(diffCallback)
-            field = newValue
-            diffResult.dispatchUpdatesTo(this)
-        }
+//    var posts: List<Post> by Delegates.observable(emptyList()) {_, oldPosts, newPosts ->
+//        notifyDataSetChanged()
+//    }
+
+//    var posts: List<Post> = emptyList()
+//        //Прописать DiffUtil
+//        set(newValue) {
+//            val diffCallback = PostsDiffCallback(field, newValue)
+//            val diffResult = DiffUtil.calculateDiff(diffCallback)
+//            field = newValue
+//            diffResult.dispatchUpdatesTo(this)
+//        }
 
     //1. Определить ViewHolder
     inner class PostViewHolder(
@@ -90,7 +97,8 @@ internal class PostAdapter(
     }
 
     //4.1 Имплементация трех методов
-    override fun getItemCount(): Int = posts.size
+    //Для ListAdapter этот метод не нужен
+//    override fun getItemCount(): Int = posts.size
 
     //4.2 Имплементация трех методов
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -110,15 +118,18 @@ internal class PostAdapter(
 
     //4.3 Имплементация трех методов
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        val post = posts[position]
-        holder.bind(post)
+//        val post = posts[position]
+//        holder.bind(post)
+        holder.bind(getItem(position))
     }
 
     private fun showPopupMenu(view: View) {
         val popupMenu = PopupMenu(view.context, view)
         val context: Context = view.context
         val post: Post = view.tag as Post
-        val position = posts.indexOfFirst { it.id == post.id }
+
+//        val position = posts.indexOfFirst { it.id == post.id }
+        val position = currentList.indexOfFirst { it.id == post.id }
 
         popupMenu.menu.add(0, ID_MOVE_UP, Menu.NONE, context.getString(R.string.menu_item_move_up))
             .apply {
@@ -127,7 +138,8 @@ internal class PostAdapter(
         popupMenu.menu.add(
             0, ID_MOVE_DOWN, Menu.NONE, context.getString(R.string.menu_item_move_down)
         ).apply {
-            isEnabled = position < posts.size - 1
+//            isEnabled = position < posts.size - 1
+            isEnabled = position < itemCount - 1
         }
         popupMenu.menu.add(0, ID_UPDATE, Menu.NONE, context.getString(R.string.menu_item_edit))
         popupMenu.menu.add(0, ID_REMOVE, Menu.NONE, context.getString(R.string.menu_item_delete))
@@ -157,6 +169,16 @@ internal class PostAdapter(
         private const val ID_MOVE_DOWN = 2
         private const val ID_REMOVE = 3
         private const val ID_UPDATE = 4
+    }
+
+    private object DiffCallback : DiffUtil.ItemCallback<Post>() {
+        override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
+            return oldItem == newItem
+        }
     }
 }
 

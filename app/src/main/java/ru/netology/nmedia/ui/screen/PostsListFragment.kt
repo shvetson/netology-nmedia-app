@@ -88,7 +88,8 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
         binding.postsRecyclerView.layoutManager = layoutManager
 
         viewModel.data.observe(viewLifecycleOwner) { it ->
-            adapter.posts = it
+//            adapter.posts = it
+            adapter.submitList(it)
         }
 
         // Отключение "мерцания" элемента списка при обновлении одного из полей,
