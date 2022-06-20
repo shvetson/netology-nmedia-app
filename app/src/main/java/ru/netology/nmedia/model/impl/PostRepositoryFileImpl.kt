@@ -55,28 +55,39 @@ class PostRepositoryFileImpl(
         return posts.firstOrNull { it.id == postId } ?: throw PostNotFoundException()
     }
 
-    override fun move(post: Post, moveBy: Int) {
-        val curIndex = posts.indexOfFirst { it.id == post.id }
-        if (curIndex == -1) return
-        val newIndex = curIndex + moveBy
-        if (newIndex < 0 || newIndex >= posts.size) return
-        // Создаем новый список, в котором производятся определенные изменения и отсылаем в адаптер для сравнния со старым, ранее переданный
-        // Решение проблемы с мутабельностью списка
-        // Но, если идет работа с данными из сети / БД, то возможно это не потребуется тк запросы возвращают новые списки
-        posts = ArrayList(posts)
-        Collections.swap(posts, curIndex, newIndex)
+    override fun delete(post: Post) {
+//        val curIndex = posts.indexOfFirst {
+//            it.id == post.id
+//        }
+//        if (curIndex != -1) {
+//            posts = ArrayList(posts)
+//            (posts as ArrayList<Post>).removeAt(curIndex)
+//            notifyChanges()
+//        }
+
+        posts = posts.filter{it.id != post.id}
         notifyChanges()
     }
 
-    override fun delete(post: Post) {
-        val curIndex = posts.indexOfFirst {
-            it.id == post.id
+    override fun save(post: Post) {
+        posts = ArrayList(posts)
+
+        if (post.id == "") {
+            insert(post)
+        } else {
+            update(post)
         }
-        if (curIndex != -1) {
-            posts = ArrayList(posts)
-            (posts as ArrayList<Post>).removeAt(curIndex)
-            notifyChanges()
-        }
+        notifyChanges()
+    }
+
+    private fun insert(post: Post) {
+        posts = (listOf(post.copy(id = UUID.randomUUID().toString())) + posts) as MutableList<Post>
+    }
+
+    private fun update(post: Post) {
+        posts = posts.map {
+            if (it.id == post.id) post else it
+        } as MutableList<Post>
     }
 
 //    Удалить после проверки работы функции save - update
@@ -105,27 +116,6 @@ class PostRepositoryFileImpl(
     private fun getLikeCount(post: Post) =
         if (post.likeFlag) post.like - 1 else post.like + 1
 
-    override fun save(post: Post) {
-        posts = ArrayList(posts)
-
-        if (post.id == "") {
-            insert(post)
-        } else {
-            update(post)
-        }
-        notifyChanges()
-    }
-
-    private fun insert(post: Post) {
-        posts = (listOf(post.copy(id = UUID.randomUUID().toString())) + posts) as MutableList<Post>
-    }
-
-    private fun update(post: Post) {
-        posts = posts.map {
-            if (it.id == post.id) post else it
-        } as MutableList<Post>
-    }
-
     override fun share(post: Post) {
         val curIndex = posts.indexOfFirst { it.id == post.id }
         if (curIndex != -1) {
@@ -140,6 +130,19 @@ class PostRepositoryFileImpl(
             val updatedPost: Post = post.copy(view = post.view + 1)
             updatePostsList(curIndex, updatedPost)
         }
+    }
+
+    override fun move(post: Post, moveBy: Int) {
+        val curIndex = posts.indexOfFirst { it.id == post.id }
+        if (curIndex == -1) return
+        val newIndex = curIndex + moveBy
+        if (newIndex < 0 || newIndex >= posts.size) return
+        // Создаем новый список, в котором производятся определенные изменения и отсылаем в адаптер для сравнния со старым, ранее переданный
+        // Решение проблемы с мутабельностью списка
+        // Но, если идет работа с данными из сети / БД, то возможно это не потребуется тк запросы возвращают новые списки
+        posts = ArrayList(posts)
+        Collections.swap(posts, curIndex, newIndex)
+        notifyChanges()
     }
 
     private fun updatePostsList(position: Int, post: Post) {

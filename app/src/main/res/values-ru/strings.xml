@@ -6,7 +6,6 @@
     <string name="image_heart">Сердечко</string>
     <string name="image_share">Поделиться</string>
     <string name="image_view">Просмотров</string>
-    <string name="menu_item_remove">Удаление</string>
     <string name="menu_item_edit">Редактирование</string>
     <string name="hint_new_post">Введите комментарий</string>
     <string name="desc_fab_add">Кнопка Add</string>
@@ -30,5 +29,4 @@
     <string name="new_post_hint_enter_author">Введите имя автора поста</string>
     <string name="new_post_hint_enter_content_post">Введите текст поста</string>
     <string name="new_post_hint_enter_youtube_link">Введите ссылку на youtube хостинг</string>
-
 </resources>

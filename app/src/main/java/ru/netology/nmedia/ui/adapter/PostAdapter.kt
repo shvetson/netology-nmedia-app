@@ -124,9 +124,10 @@ internal class PostAdapter(
     }
 
     private fun showPopupMenu(view: View) {
-        val popupMenu = PopupMenu(view.context, view)
+
         val context: Context = view.context
         val post: Post = view.tag as Post
+        val popupMenu = PopupMenu(context, view)
 
 //        val position = posts.indexOfFirst { it.id == post.id }
         val position = currentList.indexOfFirst { it.id == post.id }

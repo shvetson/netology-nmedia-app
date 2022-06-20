@@ -5,7 +5,6 @@
     <string name="image_heart">Heart</string>
     <string name="image_share">Share</string>
     <string name="image_view">View</string>
-    <string name="menu_item_remove">Remove</string>
     <string name="menu_item_edit">Edit</string>
     <string name="hint_new_post">Enter text</string>
     <string name="desc_fab_add">Add button</string>
@@ -29,6 +28,4 @@
     <string name="new_post_hint_enter_author">Enter author name</string>
     <string name="new_post_hint_enter_content_post">Enter post\'s content</string>
     <string name="new_post_hint_enter_youtube_link">Enter youtube\'s link</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

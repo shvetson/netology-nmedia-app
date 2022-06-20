@@ -15,14 +15,14 @@ import ru.netology.nmedia.model.repositoty.PostRepository
 class PostsListViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: PostRepository = PostRepositoryFileImpl(application)
 
-    private val _posts = MutableLiveData<List<Post>>()
-    val data: LiveData<List<Post>> = _posts
+//    private var _posts = MutableLiveData(repository.getAll())
+//    val data: LiveData<List<Post>> = _posts
 
-    private val listener: PostsListener = {
-        _posts.value = it
-    }
+//    private val listener: PostsListener = {
+//        _posts.value = it
+//    }
 
-//    val data by repository::data
+    val data by repository::data
 
     val onShareContent = SingleLiveEvent<String>()
     val onViewYoutubeLink = SingleLiveEvent<String>()
@@ -31,18 +31,9 @@ class PostsListViewModel(application: Application) : AndroidViewModel(applicatio
 //        _posts.value = repository.getAll()
 //    }
 
-    init {
-        loadPosts()
-    }
 
-    private fun loadPosts() {
-        repository.addListener(listener)
-    }
 
-    override fun onCleared() {
-        super.onCleared()
-        repository.removeListener(listener)
-    }
+
 
     fun onLikeClicked(post: Post) {
         repository.like(post)
@@ -52,25 +43,6 @@ class PostsListViewModel(application: Application) : AndroidViewModel(applicatio
         onShareContent.value = post.content
         repository.share(post)
     }
-
-//    fun onSaveClicked(content: String) {
-//        if (content.isBlank()) return
-//
-//        val post = currentPost.value?.copy(
-//            content = content,
-//            created = Date().time,
-//        ) ?: Post(
-//            id = "",
-//            author = "Нетология",
-//            content = content,
-//            video = "https://www.youtube.com/watch?v=WhWc3b3KhnY",
-//            like = 0,
-//            share = 0,
-//            view = 0
-//        )
-//        repository.save(post)
-//        currentPost.value = null
-//    }
 
     fun onSaveClicked(post: Post) {
         repository.save(post)
@@ -84,13 +56,8 @@ class PostsListViewModel(application: Application) : AndroidViewModel(applicatio
         repository.move(post, moveBy)
     }
 
-    fun onRemoveClicked(post: Post) = repository.delete(post)
-
-    fun onUpdateClicked(post: Post) {
-        //repository.save(post)
-    }
-
-    fun onPostDetailsClicked(post: Post) {
+    fun onDeleteClicked(post: Post) {
+        repository.delete(post)
     }
 
     fun onYouTubeClicked(post: Post) {

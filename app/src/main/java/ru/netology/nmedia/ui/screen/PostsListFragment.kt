@@ -62,7 +62,7 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
             }
 
             override fun onRemoveClicked(post: Post) {
-                viewModel.onRemoveClicked(post)
+                viewModel.onDeleteClicked(post)
             }
 
             override fun onMoveClicked(post: Post, moveBy: Int) {
