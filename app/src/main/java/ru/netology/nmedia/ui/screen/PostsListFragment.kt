@@ -9,14 +9,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostsListBinding
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.ui.adapter.PostAdapter
-import ru.netology.nmedia.ui.listener.PostActionListener
+import ru.netology.nmedia.ui.listener.ScreenActionListener
 import ru.netology.nmedia.viewModel.PostsListViewModel
 
 class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
@@ -48,41 +47,16 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPostsListBinding.inflate(inflater, container, false)
-        adapter = PostAdapter(viewModel)
+        adapter = PostAdapter(viewModel, object : ScreenActionListener {
 
-//            object : PostActionListener {
-//            override fun onLikeClicked(post: Post) {
-//                viewModel.onLikeClicked(post)
-//            }
-//
-//            override fun onShareClicked(post: Post) {
-//                viewModel.onShareClicked(post)
-//            }
-//
-//            override fun onViewClicked(post: Post) {
-//                viewModel.onViewClicked(post)
-//            }
-//
-//            override fun onRemoveClicked(post: Post) {
-//                viewModel.onDeleteClicked(post)
-//            }
-//
-//            override fun onMoveClicked(post: Post, moveBy: Int) {
-//                viewModel.onMoveClicked(post, moveBy)
-//            }
-//
-//            override fun onPostDetailsClicked(postId: String) {
-//                createFragmentByReplace(R.id.fragmentContainer, PostDetailsFragment.newInstance(postId = postId))
-//            }
-//
-//            override fun onUpdateClicked(postId: String) {
-//                createFragmentByReplace(R.id.fragmentContainer, PostEditFragment.newInstance(postId = postId))
-//            }
-//
-//            override fun onYouTubeClicked(post: Post) {
-//                viewModel.onYouTubeClicked(post)
-//            }
-//        })
+            override fun onPostDetailsClicked(postId: String) {
+                createFragmentByReplace(R.id.fragmentContainer, PostDetailsFragment.newInstance(postId = postId))
+            }
+
+            override fun onPostEditClicked(postId: String) {
+                createFragmentByReplace(R.id.fragmentContainer, PostEditFragment.newInstance(postId = postId))
+            }
+        })
 
         binding.postsRecyclerView.adapter = adapter
 

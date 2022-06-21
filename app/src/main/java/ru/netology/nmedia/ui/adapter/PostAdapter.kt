@@ -13,11 +13,13 @@ import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.ItemPostBinding
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.ui.listener.PostActionListener
+import ru.netology.nmedia.ui.listener.ScreenActionListener
 import ru.netology.nmedia.util.Utils.formatValue
 import java.text.SimpleDateFormat
 
 internal class PostAdapter(
-    private val actionListener: PostActionListener
+    private val actionListener: PostActionListener,
+    private val screenActionListener: ScreenActionListener
 ) : ListAdapter<Post, PostAdapter.PostViewHolder>(DiffCallback), View.OnClickListener {
 
     //1. Определить ViewHolder
@@ -74,14 +76,14 @@ internal class PostAdapter(
                 actionListener.onYouTubeClicked(post)
             }
             else -> {
-                actionListener.onPostDetailsClicked(post.id)
+                screenActionListener.onPostDetailsClicked(post.id)
             }
         }
     }
 
     //4.1 Имплементация трех методов
     //Для ListAdapter этот метод не нужен
-//    override fun getItemCount(): Int = posts.size
+    //override fun getItemCount(): Int = posts.size
 
     //4.2 Имплементация трех методов
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -104,6 +106,7 @@ internal class PostAdapter(
         holder.bind(getItem(position))
     }
 
+    //5. Прописываем меню после создания макета
     private fun showPopupMenu(view: View) {
         val context: Context = view.context
         val post: Post = view.tag as Post
@@ -121,7 +124,7 @@ internal class PostAdapter(
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
-                    actionListener.onEditClicked(post)
+                    screenActionListener.onPostEditClicked(post.id)
                     true
                 }
                 R.id.menu_delete -> {
@@ -130,7 +133,6 @@ internal class PostAdapter(
                 }
                 R.id.menu_move_up -> {
                     actionListener.onMoveClicked(post, -1)
-                    menuItem.isEnabled = position > 0
                     true
                 }
                 R.id.menu_move_down -> {

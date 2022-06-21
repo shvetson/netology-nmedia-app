@@ -3,7 +3,6 @@ package ru.netology.nmedia.viewModel
 import SingleLiveEvent
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.model.impl.PostRepositoryFileImpl
 import ru.netology.nmedia.model.repositoty.PostRepository
@@ -14,9 +13,6 @@ class PostsListViewModel(application: Application
 
     private val repository: PostRepository = PostRepositoryFileImpl(application)
     val data by repository::data
-
-//    val currentPost = MutableLiveData<Post?>(null)
-
 
     val onShareContent = SingleLiveEvent<String>()
     val onViewYoutubeLink = SingleLiveEvent<String>()
@@ -35,30 +31,16 @@ class PostsListViewModel(application: Application
         repository.view(post)
     }
 
-    // ????
     override fun onSaveClicked(post: Post) {
         repository.save(post)
-//        currentPost.value = null
     }
 
     override fun onDeleteClicked(post: Post) {
         repository.delete(post)
     }
 
-    override fun onEditClicked(post: Post) {
-        TODO("Not yet implemented")
-    }
-
     override fun onMoveClicked(post: Post, moveBy: Int) {
         repository.move(post, moveBy)
-    }
-
-    override fun onPostDetailsClicked(postId: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onUpdateClicked(postId: String) {
-        TODO("Not yet implemented")
     }
 
     override fun onYouTubeClicked(post: Post) {

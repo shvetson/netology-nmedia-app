@@ -10,13 +10,9 @@ import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.model.repositoty.PostRepository
 import java.util.*
 
-typealias PostsListener = (posts: List<Post>) -> Unit
-
 class PostRepositoryFileImpl(
     private val application: Application
 ) : PostRepository {
-
-    private val listeners: MutableSet<PostsListener> = mutableSetOf()
 
     private val gson = Gson()
     private val type = TypeToken.getParameterized(List::class.java, Post::class.java).type
@@ -35,6 +31,7 @@ class PostRepositoryFileImpl(
             }
             data.value = newValue
         }
+
     override val data: MutableLiveData<List<Post>>
 
     init {
@@ -56,61 +53,29 @@ class PostRepositoryFileImpl(
     }
 
     override fun delete(post: Post) {
-//        val curIndex = posts.indexOfFirst {
-//            it.id == post.id
-//        }
-//        if (curIndex != -1) {
-//            posts = ArrayList(posts)
-//            (posts as ArrayList<Post>).removeAt(curIndex)
-//            notifyChanges()
-//        }
-
-        posts = posts.filter{it.id != post.id}
-        notifyChanges()
+        posts = posts.filter { it.id != post.id }
     }
 
     override fun save(post: Post) {
-        //posts = ArrayList(posts)
-
         if (post.id == "") {
             insert(post)
         } else {
             update(post)
         }
-        notifyChanges()
     }
 
     private fun insert(post: Post) {
-        // проверить posts
-        // posts = listOf(post.copy(id = UUID.randomUUID().toString())) + posts
-        data.value = listOf(post.copy(id = UUID.randomUUID().toString())) + posts
+        posts = listOf(post.copy(id = UUID.randomUUID().toString())) + posts
     }
 
     private fun update(post: Post) {
-        // posts = ...
-        data.value = posts.map {
+        posts = posts.map {
             if (it.id == post.id) post else it
         }
     }
 
-//    Удалить после проверки работы функции save - update
-//    override fun updateDate(post: Post) {
-//        val curIndex = posts.indexOfFirst { it.id == post.id }
-//        if (curIndex == -1) return
-//        val newPost = post.copy(created = Date().time)
-//        posts = ArrayList(posts)
-//        posts[curIndex] = newPost
-//        notifyChanges()
-//    }
-
     override fun like(post: Post) {
-//        val curIndex = posts.indexOfFirst { it.id == post.id }
-//        if (curIndex != -1) {
-//            val updatedPost: Post = post.copy(like = getLikeCount(post), likeFlag = !post.likeFlag)
-//            updatePostsList(curIndex, updatedPost)
-//        }
-
-        data.value = posts.map {
+        posts = posts.map {
             if (it.id != post.id) it
             else it.copy(like = getLikeCount(post), likeFlag = !post.likeFlag)
         }
@@ -120,18 +85,16 @@ class PostRepositoryFileImpl(
         if (post.likeFlag) post.like - 1 else post.like + 1
 
     override fun share(post: Post) {
-        val curIndex = posts.indexOfFirst { it.id == post.id }
-        if (curIndex != -1) {
-            val updatedPost: Post = post.copy(share = post.share + 1)
-            updatePostsList(curIndex, updatedPost)
+        posts = posts.map {
+            if (it.id != post.id) it
+            else it.copy(share = post.share + 1)
         }
     }
 
     override fun view(post: Post) {
-        val curIndex = posts.indexOfFirst { it.id == post.id }
-        if (curIndex != -1) {
-            val updatedPost: Post = post.copy(view = post.view + 1)
-            updatePostsList(curIndex, updatedPost)
+        posts = posts.map {
+            if (it.id != post.id) it
+            else it.copy(view = post.view + 1)
         }
     }
 
@@ -145,25 +108,5 @@ class PostRepositoryFileImpl(
         // Но, если идет работа с данными из сети / БД, то возможно это не потребуется тк запросы возвращают новые списки
         posts = ArrayList(posts)
         Collections.swap(posts, curIndex, newIndex)
-        notifyChanges()
-    }
-
-    private fun updatePostsList(position: Int, post: Post) {
-        posts = ArrayList(posts)
-        (posts as ArrayList<Post>)[position] = post
-        notifyChanges()
-    }
-
-    override fun addListener(listener: PostsListener) {
-        listeners.add(listener)
-        listener.invoke(posts)
-    }
-
-    override fun removeListener(listener: PostsListener) {
-        listeners.remove(listener)
-    }
-
-    private fun notifyChanges() {
-        listeners.forEach { it.invoke(posts) }
     }
 }

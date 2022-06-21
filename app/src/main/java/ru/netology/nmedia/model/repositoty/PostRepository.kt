@@ -2,7 +2,6 @@ package ru.netology.nmedia.model.repositoty
 
 import androidx.lifecycle.LiveData
 import ru.netology.nmedia.model.Post
-import ru.netology.nmedia.model.impl.PostsListener
 
 interface PostRepository {
     val data: LiveData<List<Post>>
@@ -17,7 +16,4 @@ interface PostRepository {
     fun like(post: Post)
     fun share(post: Post)
     fun view(post: Post)
-
-    fun addListener(listener: PostsListener)
-    fun removeListener(listener: PostsListener)
 }
