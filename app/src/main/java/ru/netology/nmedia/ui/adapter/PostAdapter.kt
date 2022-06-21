@@ -3,7 +3,6 @@ package ru.netology.nmedia.ui.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
@@ -16,29 +15,13 @@ import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.ui.listener.PostActionListener
 import ru.netology.nmedia.util.Utils.formatValue
 import java.text.SimpleDateFormat
-import kotlin.properties.Delegates
 
 internal class PostAdapter(
     private val actionListener: PostActionListener
-//) : RecyclerView.Adapter<PostAdapter.PostViewHolder>(), View.OnClickListener {
 ) : ListAdapter<Post, PostAdapter.PostViewHolder>(DiffCallback), View.OnClickListener {
 
-    //3. Прописать список постов
-//    var posts: List<Post> by Delegates.observable(emptyList()) {_, oldPosts, newPosts ->
-//        notifyDataSetChanged()
-//    }
-
-//    var posts: List<Post> = emptyList()
-//        //Прописать DiffUtil
-//        set(newValue) {
-//            val diffCallback = PostsDiffCallback(field, newValue)
-//            val diffResult = DiffUtil.calculateDiff(diffCallback)
-//            field = newValue
-//            diffResult.dispatchUpdatesTo(this)
-//        }
-
     //1. Определить ViewHolder
-    inner class PostViewHolder(
+    class PostViewHolder(
         private val binding: ItemPostBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -118,58 +101,45 @@ internal class PostAdapter(
 
     //4.3 Имплементация трех методов
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-//        val post = posts[position]
-//        holder.bind(post)
         holder.bind(getItem(position))
     }
 
     private fun showPopupMenu(view: View) {
-
         val context: Context = view.context
         val post: Post = view.tag as Post
-        val popupMenu = PopupMenu(context, view)
-
-//        val position = posts.indexOfFirst { it.id == post.id }
         val position = currentList.indexOfFirst { it.id == post.id }
 
-        popupMenu.menu.add(0, ID_MOVE_UP, Menu.NONE, context.getString(R.string.menu_item_move_up))
-            .apply {
-                isEnabled = position > 0
+        val popupMenu by lazy {
+            PopupMenu(context, view).apply {
+                inflate(R.menu.options_post)
+                this.menu.findItem(R.id.menu_move_down).isEnabled = position < itemCount - 1
+                this.menu.findItem(R.id.menu_move_up).isEnabled = position > 0
             }
-        popupMenu.menu.add(
-            0, ID_MOVE_DOWN, Menu.NONE, context.getString(R.string.menu_item_move_down)
-        ).apply {
-//            isEnabled = position < posts.size - 1
-            isEnabled = position < itemCount - 1
-        }
-        popupMenu.menu.add(0, ID_UPDATE, Menu.NONE, context.getString(R.string.menu_item_edit))
-        popupMenu.menu.add(0, ID_REMOVE, Menu.NONE, context.getString(R.string.menu_item_delete))
-
-        popupMenu.setOnMenuItemClickListener {
-            when (it.itemId) {
-                ID_MOVE_UP -> {
-                    actionListener.onMoveClicked(post, -1)
-                }
-                ID_MOVE_DOWN -> {
-                    actionListener.onMoveClicked(post, 1)
-                }
-                ID_UPDATE -> {
-                    actionListener.onUpdateClicked(post.id)
-                }
-                ID_REMOVE -> {
-                    actionListener.onRemoveClicked(post)
-                }
-            }
-            return@setOnMenuItemClickListener true
         }
         popupMenu.show()
-    }
 
-    companion object {
-        private const val ID_MOVE_UP = 1
-        private const val ID_MOVE_DOWN = 2
-        private const val ID_REMOVE = 3
-        private const val ID_UPDATE = 4
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_edit -> {
+                    actionListener.onEditClicked(post)
+                    true
+                }
+                R.id.menu_delete -> {
+                    actionListener.onDeleteClicked(post)
+                    true
+                }
+                R.id.menu_move_up -> {
+                    actionListener.onMoveClicked(post, -1)
+                    menuItem.isEnabled = position > 0
+                    true
+                }
+                R.id.menu_move_down -> {
+                    actionListener.onMoveClicked(post, 1)
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private object DiffCallback : DiffUtil.ItemCallback<Post>() {
@@ -180,26 +150,5 @@ internal class PostAdapter(
         override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
             return oldItem == newItem
         }
-    }
-}
-
-class PostsDiffCallback(
-    private val oldList: List<Post>,
-    private val newList: List<Post>
-) : DiffUtil.Callback() {
-
-    override fun getOldListSize(): Int = oldList.size
-    override fun getNewListSize(): Int = newList.size
-
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldPost: Post = oldList[oldItemPosition]
-        val newPost: Post = newList[newItemPosition]
-        return oldPost.id == newPost.id
-    }
-
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldPost: Post = oldList[oldItemPosition]
-        val newPost: Post = newList[newItemPosition]
-        return oldPost == newPost
     }
 }

@@ -70,7 +70,7 @@ class PostRepositoryFileImpl(
     }
 
     override fun save(post: Post) {
-        posts = ArrayList(posts)
+        //posts = ArrayList(posts)
 
         if (post.id == "") {
             insert(post)
@@ -81,13 +81,16 @@ class PostRepositoryFileImpl(
     }
 
     private fun insert(post: Post) {
-        posts = (listOf(post.copy(id = UUID.randomUUID().toString())) + posts) as MutableList<Post>
+        // проверить posts
+        // posts = listOf(post.copy(id = UUID.randomUUID().toString())) + posts
+        data.value = listOf(post.copy(id = UUID.randomUUID().toString())) + posts
     }
 
     private fun update(post: Post) {
-        posts = posts.map {
+        // posts = ...
+        data.value = posts.map {
             if (it.id == post.id) post else it
-        } as MutableList<Post>
+        }
     }
 
 //    Удалить после проверки работы функции save - update

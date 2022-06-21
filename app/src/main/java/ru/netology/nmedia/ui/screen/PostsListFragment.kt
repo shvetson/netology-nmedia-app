@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.netology.nmedia.R
@@ -27,7 +28,6 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        viewModel.loadPosts()
 
         setFragmentResultListener(requestKey = PostContentFragment.REQUEST_KEY) { requestKey, bundle ->
             if (requestKey != PostContentFragment.REQUEST_KEY) return@setFragmentResultListener
@@ -48,39 +48,41 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPostsListBinding.inflate(inflater, container, false)
-        adapter = PostAdapter(object : PostActionListener {
-            override fun onLikeClicked(post: Post) {
-                viewModel.onLikeClicked(post)
-            }
+        adapter = PostAdapter(viewModel)
 
-            override fun onShareClicked(post: Post) {
-                viewModel.onShareClicked(post)
-            }
-
-            override fun onViewClicked(post: Post) {
-                viewModel.onViewClicked(post)
-            }
-
-            override fun onRemoveClicked(post: Post) {
-                viewModel.onDeleteClicked(post)
-            }
-
-            override fun onMoveClicked(post: Post, moveBy: Int) {
-                viewModel.onMoveClicked(post, moveBy)
-            }
-
-            override fun onPostDetailsClicked(postId: String) {
-                createFragmentByReplace(R.id.fragmentContainer, PostDetailsFragment.newInstance(postId = postId))
-            }
-
-            override fun onUpdateClicked(postId: String) {
-                createFragmentByReplace(R.id.fragmentContainer, PostEditFragment.newInstance(postId = postId))
-            }
-
-            override fun onYouTubeClicked(post: Post) {
-                viewModel.onYouTubeClicked(post)
-            }
-        })
+//            object : PostActionListener {
+//            override fun onLikeClicked(post: Post) {
+//                viewModel.onLikeClicked(post)
+//            }
+//
+//            override fun onShareClicked(post: Post) {
+//                viewModel.onShareClicked(post)
+//            }
+//
+//            override fun onViewClicked(post: Post) {
+//                viewModel.onViewClicked(post)
+//            }
+//
+//            override fun onRemoveClicked(post: Post) {
+//                viewModel.onDeleteClicked(post)
+//            }
+//
+//            override fun onMoveClicked(post: Post, moveBy: Int) {
+//                viewModel.onMoveClicked(post, moveBy)
+//            }
+//
+//            override fun onPostDetailsClicked(postId: String) {
+//                createFragmentByReplace(R.id.fragmentContainer, PostDetailsFragment.newInstance(postId = postId))
+//            }
+//
+//            override fun onUpdateClicked(postId: String) {
+//                createFragmentByReplace(R.id.fragmentContainer, PostEditFragment.newInstance(postId = postId))
+//            }
+//
+//            override fun onYouTubeClicked(post: Post) {
+//                viewModel.onYouTubeClicked(post)
+//            }
+//        })
 
         binding.postsRecyclerView.adapter = adapter
 
@@ -88,7 +90,6 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
         binding.postsRecyclerView.layoutManager = layoutManager
 
         viewModel.data.observe(viewLifecycleOwner) { it ->
-//            adapter.posts = it
             adapter.submitList(it)
         }
 

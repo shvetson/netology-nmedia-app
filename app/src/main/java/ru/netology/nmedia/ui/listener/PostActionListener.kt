@@ -7,13 +7,15 @@ interface PostActionListener {
     fun onShareClicked(post: Post)
     fun onViewClicked(post: Post)
 
-    fun onRemoveClicked(post: Post)
+    fun onDeleteClicked(post: Post)
+    fun onSaveClicked(post: Post)
+    fun onEditClicked(post: Post)
+
     fun onMoveClicked(post: Post, moveBy: Int)
+
     fun onPostDetailsClicked(postId: String)
     fun onUpdateClicked(postId: String)
 
-//    fun onSaveClicked(content: String)
-//    fun onEditClicked(post: Post)
 //    fun onAddClicked()
 
     fun onYouTubeClicked(post: Post)
