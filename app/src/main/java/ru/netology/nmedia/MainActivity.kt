@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             supportFragmentManager
                 .beginTransaction()
-                .add(R.id.fragmentContainer, PostsListFragment())
+                .add(R.id.fragmentContainer, PostsListFragment(), "PostsListTag")
                 .commit()
         }
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentListener, false)

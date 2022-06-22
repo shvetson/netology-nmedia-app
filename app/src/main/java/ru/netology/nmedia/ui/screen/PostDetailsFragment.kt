@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostDetailsBinding
@@ -101,22 +102,24 @@ class PostDetailsFragment : Fragment(R.layout.fragment_post_details), HasCustomT
                                 it
                             )
                             .commit()
+
+                        val f: Fragment? = requireActivity().supportFragmentManager.findFragmentByTag("PostsListTag")
+                        f?.
                     }
                     true
                 }
                 R.id.menu_delete -> {
-                    Toast.makeText(requireContext(), "Delete post", Toast.LENGTH_SHORT).show()
-//                    postActionListener.onDeleteClicked(post)
+                    currentPost?.let { viewModel.deletePost(it) }
+                    onBackPressed()
                     true
                 }
-//                R.id.menu_move_up -> {
-//                    true
-//                }
-//                R.id.menu_move_down -> {
-//                    true
-//                }
                 else -> false
             }
         }
+    }
+
+    fun onBackPressed() {
+        val fm: FragmentManager = requireActivity().supportFragmentManager
+        fm.popBackStack()
     }
 }

@@ -29,4 +29,8 @@ class PostDetailsViewModel(application: Application) : AndroidViewModel(applicat
             e.printStackTrace()
         }
     }
+
+    fun deletePost(post: Post) {
+        repository.delete(post)
+    }
 }
