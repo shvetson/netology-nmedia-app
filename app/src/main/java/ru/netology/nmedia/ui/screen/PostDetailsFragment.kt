@@ -1,10 +1,13 @@
 package ru.netology.nmedia.ui.screen
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import ru.netology.nmedia.R
@@ -18,6 +21,7 @@ class PostDetailsFragment : Fragment(R.layout.fragment_post_details), HasCustomT
 
     private lateinit var binding: FragmentPostDetailsBinding
     private val viewModel: PostDetailsViewModel by viewModels()
+    private var currentPost: Post? = null
 
     companion object {
         private const val ARG_POST_ID = "ARG_POST_ID"
@@ -46,10 +50,16 @@ class PostDetailsFragment : Fragment(R.layout.fragment_post_details), HasCustomT
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPostDetailsBinding.inflate(inflater, container, false)
-        viewModel.getPost().observe(viewLifecycleOwner) { post -> render(post) }
+        viewModel.data.observe(viewLifecycleOwner) { post ->
+            render(post)
+            currentPost = post
+        }
 
         binding.okButton.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
+        }
+        binding.optionsButton.setOnClickListener { view ->
+            showPopupMenu(view)
         }
         return binding.root
     }
@@ -65,6 +75,48 @@ class PostDetailsFragment : Fragment(R.layout.fragment_post_details), HasCustomT
             postLikeButton.text = post.like.toString()
             postShareButton.text = post.share.toString()
             postViewButton.text = post.view.toString()
+        }
+    }
+
+    private fun showPopupMenu(view: View) {
+        val context: Context = view.context
+        val popupMenu by lazy {
+            PopupMenu(context, view).apply {
+                inflate(R.menu.options_post)
+                this.menu.findItem(R.id.menu_move_up).isVisible = false
+                this.menu.findItem(R.id.menu_move_down).isVisible = false
+            }
+        }
+        popupMenu.show()
+
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_edit -> {
+                    Toast.makeText(requireContext(), "Edit post", Toast.LENGTH_SHORT).show()
+                    currentPost?.let { PostEditFragment.newInstance(it.id) }?.let {
+                        requireActivity().supportFragmentManager
+                            .beginTransaction()
+                            .addToBackStack(null)
+                            .replace(R.id.fragmentContainer,
+                                it
+                            )
+                            .commit()
+                    }
+                    true
+                }
+                R.id.menu_delete -> {
+                    Toast.makeText(requireContext(), "Delete post", Toast.LENGTH_SHORT).show()
+//                    postActionListener.onDeleteClicked(post)
+                    true
+                }
+//                R.id.menu_move_up -> {
+//                    true
+//                }
+//                R.id.menu_move_down -> {
+//                    true
+//                }
+                else -> false
+            }
         }
     }
 }

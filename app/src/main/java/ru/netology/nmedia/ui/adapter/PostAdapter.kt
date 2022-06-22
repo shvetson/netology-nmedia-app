@@ -18,7 +18,7 @@ import ru.netology.nmedia.util.Utils.formatValue
 import java.text.SimpleDateFormat
 
 internal class PostAdapter(
-    private val actionListener: PostActionListener,
+    private val postActionListener: PostActionListener,
     private val screenActionListener: ScreenActionListener
 ) : ListAdapter<Post, PostAdapter.PostViewHolder>(DiffCallback), View.OnClickListener {
 
@@ -64,16 +64,16 @@ internal class PostAdapter(
                 showPopupMenu(view)
             }
             R.id.post_like_button -> {
-                actionListener.onLikeClicked(post)
+                postActionListener.onLikeClicked(post)
             }
             R.id.post_share_button -> {
-                actionListener.onShareClicked(post)
+                postActionListener.onShareClicked(post)
             }
             R.id.post_view_button -> {
-                actionListener.onViewClicked(post)
+                postActionListener.onViewClicked(post)
             }
             R.id.video_image_view -> {
-                actionListener.onYouTubeClicked(post)
+                postActionListener.onYouTubeClicked(post)
             }
             else -> {
                 screenActionListener.onPostDetailsClicked(post.id)
@@ -128,15 +128,15 @@ internal class PostAdapter(
                     true
                 }
                 R.id.menu_delete -> {
-                    actionListener.onDeleteClicked(post)
+                    postActionListener.onDeleteClicked(post)
                     true
                 }
                 R.id.menu_move_up -> {
-                    actionListener.onMoveClicked(post, -1)
+                    postActionListener.onMoveClicked(post, -1)
                     true
                 }
                 R.id.menu_move_down -> {
-                    actionListener.onMoveClicked(post, 1)
+                    postActionListener.onMoveClicked(post, 1)
                     true
                 }
                 else -> false

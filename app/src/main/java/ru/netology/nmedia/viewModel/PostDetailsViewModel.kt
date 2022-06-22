@@ -13,18 +13,18 @@ import ru.netology.nmedia.model.repositoty.PostRepository
 class PostDetailsViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: PostRepository = PostRepositoryFileImpl(application)
 
-    private val _post : MutableLiveData<Post> by lazy {
-        MutableLiveData<Post>()
-    }
-
-    fun getPost(): LiveData<Post> {
-        return _post
-    }
+    //Получаем Post ч/з репозиторий
+    private val post: (String) -> Post = repository::getById
+    //Оборачиваем Post в LiveData (сначала private мутабельное, потом публичное и нередактируемое)
+    private val _post = MutableLiveData<Post>()
+    val data:LiveData<Post> = _post
 
     fun loadPost(postId: String) {
         if (_post.value != null) return
         try {
-            _post.value = repository.getById(postId)
+            _post.value = post(postId)
+//            _post.value = repository.getById(postId)
+
         } catch (e: PostNotFoundException) {
             e.printStackTrace()
         }

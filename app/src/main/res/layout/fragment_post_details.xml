@@ -48,6 +48,19 @@
         app:layout_constraintTop_toBottomOf="@+id/post_author_text_view"
         tools:text="10/04/2022" />
 
+    <ImageView
+        android:id="@+id/options_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/common_spacing"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/desc_options_button"
+        android:minWidth="40dp"
+        android:minHeight="40dp"
+        android:src ="@drawable/ic_baseline_more_vert_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/post_author_text_view" />
+
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/header_barrier"
         android:layout_width="0dp"
@@ -102,7 +115,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_spacing"
         android:contentDescription="@string/image_heart"
-        android:enabled="false"
+        android:enabled="true"
         app:cornerRadius="@dimen/button_corner_radius"
         app:icon="@drawable/ic_heart"
         app:layout_constraintStart_toStartOf="parent"
@@ -117,7 +130,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_spacing_small"
         android:contentDescription="@string/image_share"
-        android:enabled="false"
+        android:enabled="true"
         app:cornerRadius="@dimen/button_corner_radius"
         app:icon="@drawable/ic_share"
         app:layout_constraintBottom_toBottomOf="@+id/post_like_button"
@@ -133,7 +146,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_spacing_small"
         android:contentDescription="@string/image_view"
-        android:enabled="false"
+        android:enabled="true"
         app:cornerRadius="@dimen/button_corner_radius"
         app:icon="@drawable/ic_view"
         app:layout_constraintBottom_toBottomOf="@+id/post_share_button"
