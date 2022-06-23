@@ -12,17 +12,17 @@ import java.util.*
 
 class PostEditViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: PostRepository = PostRepositoryFileImpl(application)
+    private val post: (String) -> Post = repository::getById
 
     private val _post: MutableLiveData<Post> by lazy {
         MutableLiveData<Post>()
     }
-
     val data: LiveData<Post> = _post
 
     fun loadPost(postId: String) {
         if (_post.value != null) return
         try {
-            _post.value = repository.getById(postId)
+            _post.value = post(postId)
         } catch (e: PostNotFoundException) {
             e.printStackTrace()
         }
@@ -31,7 +31,7 @@ class PostEditViewModel(application: Application) : AndroidViewModel(application
     fun updatePost(author: String, content: String, video: String): Post? {
         if (author.isBlank() || content.isBlank()) return null
 
-        return (data.value as Post).copy(
+        return (_post.value as Post).copy(
             author = author,
             content = content,
             video = video.ifBlank { "https://www.youtube.com/watch?v=WhWc3b3KhnY" },

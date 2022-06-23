@@ -22,9 +22,9 @@ class PostEditFragment : Fragment(R.layout.fragment_post_edit), HasCustomTitle {
     private lateinit var binding: FragmentPostEditBinding
     private val viewModel: PostEditViewModel by viewModels()
 
-//    private val postId: String by lazy {
-//        requireArguments().getString(ARG_POST_ID).toString()
-//    }
+    private val postId: String by lazy {
+        requireArguments().getString(ARG_POST_ID).toString()
+    }
 
     private var author: String? = null
     private var content: String? = null
@@ -56,14 +56,7 @@ class PostEditFragment : Fragment(R.layout.fragment_post_edit), HasCustomTitle {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.loadPost(requireArguments().getString(ARG_POST_ID)!!)
-
-//        init | restore state
-        if (savedInstanceState != null) {
-            author = savedInstanceState.getString(ARG_AUTHOR)
-            content = savedInstanceState.getString(ARG_CONTENT)
-            video = savedInstanceState.getString(ARG_VIDEO)
-        }
+        viewModel.loadPost(postId)
     }
 
     override fun onCreateView(
@@ -72,8 +65,9 @@ class PostEditFragment : Fragment(R.layout.fragment_post_edit), HasCustomTitle {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPostEditBinding.inflate(inflater, container, false)
-
-        viewModel.data.observe(viewLifecycleOwner, Observer<Post> { post -> render(post) })
+        viewModel.data.observe(viewLifecycleOwner, Observer<Post> {
+            render(it)
+        })
         requestFocusAndShowSoftInput(binding.postContentEditText)
 
         binding.okButton.setOnClickListener {
@@ -115,8 +109,19 @@ class PostEditFragment : Fragment(R.layout.fragment_post_edit), HasCustomTitle {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(ARG_AUTHOR, binding.postAuthorEditText.text.toString())
-        outState.putString(ARG_CONTENT, binding.postContentEditText.text.toString())
-        outState.putString(ARG_VIDEO, binding.postVideoEditText.text.toString())
+        outState.run {
+            putString(ARG_AUTHOR, binding.postAuthorEditText.text.toString())
+            putString(ARG_CONTENT, binding.postContentEditText.text.toString())
+            putString(ARG_VIDEO, binding.postVideoEditText.text.toString())
+        }
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            author = savedInstanceState.getString(ARG_AUTHOR)
+            content = savedInstanceState.getString(ARG_CONTENT)
+            video = savedInstanceState.getString(ARG_VIDEO)
+        }
+        super.onViewStateRestored(savedInstanceState)
     }
 }

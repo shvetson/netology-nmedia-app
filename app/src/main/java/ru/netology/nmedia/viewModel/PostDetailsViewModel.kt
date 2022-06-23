@@ -24,7 +24,6 @@ class PostDetailsViewModel(application: Application) : AndroidViewModel(applicat
         try {
             _post.value = post(postId)
 //            _post.value = repository.getById(postId)
-
         } catch (e: PostNotFoundException) {
             e.printStackTrace()
         }

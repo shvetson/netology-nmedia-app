@@ -17,6 +17,7 @@ import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.ui.adapter.PostAdapter
 import ru.netology.nmedia.ui.listener.ScreenActionListener
 import ru.netology.nmedia.viewModel.PostsListViewModel
+import javax.crypto.AEADBadTagException
 
 class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
 
@@ -50,11 +51,11 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
         adapter = PostAdapter(viewModel, object : ScreenActionListener {
 
             override fun onPostDetailsClicked(postId: String) {
-                createFragmentByReplace(R.id.fragmentContainer, PostDetailsFragment.newInstance(postId = postId))
+                createFragmentByReplace(R.id.fragmentContainer, PostDetailsFragment.newInstance(postId = postId), "tag")
             }
 
             override fun onPostEditClicked(postId: String) {
-                createFragmentByReplace(R.id.fragmentContainer, PostEditFragment.newInstance(postId = postId))
+                createFragmentByReplace(R.id.fragmentContainer, PostEditFragment.newInstance(postId = postId), null)
             }
         })
 
@@ -63,7 +64,7 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
         val layoutManager = LinearLayoutManager(requireContext())
         binding.postsRecyclerView.layoutManager = layoutManager
 
-        viewModel.data.observe(viewLifecycleOwner) { it ->
+        viewModel.data.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
 
@@ -75,7 +76,7 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
         }
 
         binding.addPostButton.setOnClickListener {
-            createFragmentByReplace(R.id.fragmentContainer, PostContentFragment.newInstance())
+            createFragmentByReplace(R.id.fragmentContainer, PostContentFragment.newInstance(), null)
         }
 
         viewModel.onShareContent.observe(viewLifecycleOwner) { content ->
@@ -102,11 +103,11 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
         return binding.root
     }
 
-    private fun createFragmentByReplace(fragmentContainer: Int, fragment: Fragment) {
+    private fun createFragmentByReplace(fragmentContainer: Int, fragment: Fragment, tag: String?) {
         requireActivity().supportFragmentManager
             .beginTransaction()
             .addToBackStack(null)
-            .replace(fragmentContainer, fragment)
+            .replace(fragmentContainer, fragment, tag)
             .commit()
     }
 }

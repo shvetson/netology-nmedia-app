@@ -3,22 +3,22 @@ package ru.netology.nmedia.ui.screen
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostDetailsBinding
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.ui.contract.HasCustomTitle
+import ru.netology.nmedia.ui.listener.ScreenActionListener
 import ru.netology.nmedia.viewModel.PostDetailsViewModel
 import java.text.SimpleDateFormat
 
-class PostDetailsFragment : Fragment(R.layout.fragment_post_details), HasCustomTitle {
+class PostDetailsFragment: Fragment(R.layout.fragment_post_details), HasCustomTitle {
 
     private lateinit var binding: FragmentPostDetailsBinding
     private val viewModel: PostDetailsViewModel by viewModels()
@@ -94,32 +94,27 @@ class PostDetailsFragment : Fragment(R.layout.fragment_post_details), HasCustomT
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
                     Toast.makeText(requireContext(), "Edit post", Toast.LENGTH_SHORT).show()
+
                     currentPost?.let { PostEditFragment.newInstance(it.id) }?.let {
                         requireActivity().supportFragmentManager
                             .beginTransaction()
                             .addToBackStack(null)
-                            .replace(R.id.fragmentContainer,
+                            .replace(
+                                R.id.fragmentContainer,
                                 it
                             )
                             .commit()
-
-                        val f: Fragment? = requireActivity().supportFragmentManager.findFragmentByTag("PostsListTag")
-                        f?.
                     }
                     true
                 }
                 R.id.menu_delete -> {
                     currentPost?.let { viewModel.deletePost(it) }
-                    onBackPressed()
+                    requireActivity().supportFragmentManager.popBackStack()
+//                    requireActivity().supportFragmentManager.findFragmentByTag("tag")?.onResume()
                     true
                 }
                 else -> false
             }
         }
-    }
-
-    fun onBackPressed() {
-        val fm: FragmentManager = requireActivity().supportFragmentManager
-        fm.popBackStack()
     }
 }
