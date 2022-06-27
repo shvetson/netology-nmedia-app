@@ -3,11 +3,13 @@ package ru.netology.nmedia.ui.screen
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import ru.netology.nmedia.R
@@ -16,12 +18,13 @@ import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.ui.contract.HasCustomTitle
 import ru.netology.nmedia.ui.listener.ScreenActionListener
 import ru.netology.nmedia.viewModel.PostDetailsViewModel
+import ru.netology.nmedia.viewModel.PostsListViewModel
 import java.text.SimpleDateFormat
 
 class PostDetailsFragment: Fragment(R.layout.fragment_post_details), HasCustomTitle {
 
     private lateinit var binding: FragmentPostDetailsBinding
-    private val viewModel: PostDetailsViewModel by viewModels()
+    private val viewModel: PostsListViewModel by viewModels()
     private var currentPost: Post? = null
 
     companion object {
@@ -41,7 +44,14 @@ class PostDetailsFragment: Fragment(R.layout.fragment_post_details), HasCustomTi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.loadPost(requireArguments().getString(ARG_POST_ID)!!)
+        viewModel.select(requireArguments().getString(ARG_POST_ID)!!)
+
+        setFragmentResultListener(requestKey = PostEditFragment.REQUEST_KEY) { requestKey, bundle ->
+            if (requestKey != PostEditFragment.REQUEST_KEY) return@setFragmentResultListener
+            val updatedPost = bundle.getParcelable<Post>(PostEditFragment.RESULT_KEY) ?: return@setFragmentResultListener
+            viewModel.onSaveClicked(updatedPost)
+            Log.d("App_Tag", "new - $updatedPost")
+        }
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -51,10 +61,16 @@ class PostDetailsFragment: Fragment(R.layout.fragment_post_details), HasCustomTi
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPostDetailsBinding.inflate(inflater, container, false)
-        viewModel.data.observe(viewLifecycleOwner) { post ->
-            render(post)
-            currentPost = post
-        }
+        viewModel.selected.observe(viewLifecycleOwner, Observer<Post> {
+            render(it)
+            currentPost = it
+            Log.d("App_Tag", "old - $it")
+
+        })
+
+        viewModel.data.observe(viewLifecycleOwner, Observer<List<Post>> {
+            Log.d("App_Tag", "${it.map { p->p.author }}")
+        })
 
         binding.okButton.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
@@ -108,9 +124,8 @@ class PostDetailsFragment: Fragment(R.layout.fragment_post_details), HasCustomTi
                     true
                 }
                 R.id.menu_delete -> {
-                    currentPost?.let { viewModel.deletePost(it) }
+                    currentPost?.let { viewModel.onDeleteClicked(it) }
                     requireActivity().supportFragmentManager.popBackStack()
-//                    requireActivity().supportFragmentManager.findFragmentByTag("tag")?.onResume()
                     true
                 }
                 else -> false

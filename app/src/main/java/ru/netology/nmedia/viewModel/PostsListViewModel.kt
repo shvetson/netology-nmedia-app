@@ -16,7 +16,20 @@ class PostsListViewModel(
 ) : AndroidViewModel(application), PostActionListener {
 
     private val repository: PostRepository = PostRepositoryFileImpl(application)
-    val data by repository::data
+    val data get() = repository.data
+
+//    private val posts: MutableLiveData<List<Post>> by lazy {
+//        MutableLiveData<List<Post>>().also {
+//                it.value = loadPosts()
+//        }
+//    }
+//
+//    fun getPosts(): LiveData<List<Post>> {
+//        Log.d("App_Tag", posts.value.toString())
+//        return posts
+//    }
+//
+//    private fun loadPosts() = repository.getAll()
 
 //    private val posts: () -> List<Post> = repository::getAll
 //    private val _posts = MutableLiveData<List<Post>>()
@@ -30,6 +43,26 @@ class PostsListViewModel(
 //            e.printStackTrace()
 //        }
 //    }
+
+    //    private val post: (String) -> Post = repository::getById
+
+    val selected = MutableLiveData<Post>()
+
+    fun select(postId: String) {
+        selected.value = repository.getById(postId)
+    }
+
+    private val _mPost = MutableLiveData<Post>()
+    val mPost: LiveData<Post> = _mPost
+
+    fun loadPost(postId: String) {
+        if (_mPost.value != null) return
+        try {
+            _mPost.value = repository.getById(postId)
+        } catch (e: PostNotFoundException) {
+            e.printStackTrace()
+        }
+    }
 
     val onShareContent = SingleLiveEvent<String>()
     val onViewYoutubeLink = SingleLiveEvent<String>()
@@ -50,7 +83,7 @@ class PostsListViewModel(
 
     override fun onSaveClicked(post: Post) {
         repository.save(post)
-//        _posts.value = posts()
+        selected.value = repository.getById(post.id)
     }
 
     override fun onDeleteClicked(post: Post) {
