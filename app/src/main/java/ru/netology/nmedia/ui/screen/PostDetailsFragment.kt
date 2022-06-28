@@ -5,10 +5,8 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -16,41 +14,42 @@ import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostDetailsBinding
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.ui.contract.HasCustomTitle
-import ru.netology.nmedia.ui.listener.ScreenActionListener
-import ru.netology.nmedia.viewModel.PostDetailsViewModel
-import ru.netology.nmedia.viewModel.PostsListViewModel
+import ru.netology.nmedia.viewModel.PostViewModel
 import java.text.SimpleDateFormat
 
-class PostDetailsFragment: Fragment(R.layout.fragment_post_details), HasCustomTitle {
+class PostDetailsFragment(
+    private val initialPost: Post
+) : Fragment(R.layout.fragment_post_details), HasCustomTitle {
 
     private lateinit var binding: FragmentPostDetailsBinding
-    private val viewModel: PostsListViewModel by viewModels()
+    private val viewModel: PostViewModel by viewModels()
     private var currentPost: Post? = null
 
-    companion object {
-        private const val ARG_POST_ID = "ARG_POST_ID"
-
-        fun newInstance(postId: String): PostDetailsFragment {
-            val fragment = PostDetailsFragment()
-            val args = Bundle()
-            args.putString(ARG_POST_ID, postId)
-            fragment.arguments = args
+//    companion object {
+//        private const val ARG_POST_ID = "ARG_POST_ID"
+//
+//        fun newInstance(postId: String): PostDetailsFragment {
+//            val fragment = PostDetailsFragment()
+//            val args = Bundle()
+//            args.putString(ARG_POST_ID, postId)
+//            fragment.arguments = args
 //            fragment.arguments = bundleOf(ARG_POST to post)
-            return fragment
-        }
-    }
+//            return fragment
+//        }
+//    }
 
     override fun getTitleRes(): Int = R.string.details
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.select(requireArguments().getString(ARG_POST_ID)!!)
+//        viewModel.loadPost(requireArguments().getString(ARG_POST_ID)!!)
 
         setFragmentResultListener(requestKey = PostEditFragment.REQUEST_KEY) { requestKey, bundle ->
             if (requestKey != PostEditFragment.REQUEST_KEY) return@setFragmentResultListener
-            val updatedPost = bundle.getParcelable<Post>(PostEditFragment.RESULT_KEY) ?: return@setFragmentResultListener
+            val updatedPost = bundle.getParcelable<Post>(PostEditFragment.RESULT_KEY)
+                ?: return@setFragmentResultListener
             viewModel.onSaveClicked(updatedPost)
-            Log.d("App_Tag", "new - $updatedPost")
+            Log.d("NMEDIA_App", "updated - $updatedPost")
         }
     }
 
@@ -61,19 +60,9 @@ class PostDetailsFragment: Fragment(R.layout.fragment_post_details), HasCustomTi
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPostDetailsBinding.inflate(inflater, container, false)
-        viewModel.selected.observe(viewLifecycleOwner, Observer<Post> {
-            render(it)
-            currentPost = it
-            Log.d("App_Tag", "old - $it")
-
-        })
-
-        viewModel.data.observe(viewLifecycleOwner, Observer<List<Post>> {
-            Log.d("App_Tag", "${it.map { p->p.author }}")
-        })
-
+        render(initialPost)
         binding.okButton.setOnClickListener {
-            requireActivity().supportFragmentManager.popBackStack()
+            parentFragmentManager.popBackStack()
         }
         binding.optionsButton.setOnClickListener { view ->
             showPopupMenu(view)
@@ -109,9 +98,7 @@ class PostDetailsFragment: Fragment(R.layout.fragment_post_details), HasCustomTi
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
-                    Toast.makeText(requireContext(), "Edit post", Toast.LENGTH_SHORT).show()
-
-                    currentPost?.let { PostEditFragment.newInstance(it.id) }?.let {
+                    initialPost.let { PostEditFragment.newInstance(it.id) }.let {
                         requireActivity().supportFragmentManager
                             .beginTransaction()
                             .addToBackStack(null)
@@ -124,8 +111,7 @@ class PostDetailsFragment: Fragment(R.layout.fragment_post_details), HasCustomTi
                     true
                 }
                 R.id.menu_delete -> {
-                    currentPost?.let { viewModel.onDeleteClicked(it) }
-                    requireActivity().supportFragmentManager.popBackStack()
+                    initialPost.let { viewModel.onDeleteClicked(it) }
                     true
                 }
                 else -> false

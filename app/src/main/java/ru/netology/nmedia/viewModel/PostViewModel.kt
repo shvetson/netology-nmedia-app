@@ -11,7 +11,7 @@ import ru.netology.nmedia.model.impl.PostRepositoryFileImpl
 import ru.netology.nmedia.model.repositoty.PostRepository
 import ru.netology.nmedia.ui.listener.PostActionListener
 
-class PostsListViewModel(
+class PostViewModel(
     application: Application
 ) : AndroidViewModel(application), PostActionListener {
 
@@ -46,11 +46,11 @@ class PostsListViewModel(
 
     //    private val post: (String) -> Post = repository::getById
 
-    val selected = MutableLiveData<Post>()
-
-    fun select(postId: String) {
-        selected.value = repository.getById(postId)
-    }
+//    val selected = MutableLiveData<Post>()
+//
+//    fun select(postId: String) {
+//        selected.value = repository.getById(postId)
+//    }
 
     private val _mPost = MutableLiveData<Post>()
     val mPost: LiveData<Post> = _mPost
@@ -64,8 +64,23 @@ class PostsListViewModel(
         }
     }
 
+    val post: (String) -> Post = repository::getById
+
     val onShareContent = SingleLiveEvent<String>()
     val onViewYoutubeLink = SingleLiveEvent<String>()
+
+    val navigateToPostContentScreenEvent = SingleLiveEvent<Post>()
+
+    val currentPost = MutableLiveData<Post?>(null)
+
+    fun onAddPost() {
+        navigateToPostContentScreenEvent.call()
+    }
+
+    fun onDetailsPost(post: Post) {
+        currentPost.value = post
+        navigateToPostContentScreenEvent.value = post
+    }
 
     // region PostActionListener
     override fun onLikeClicked(post: Post) {
@@ -83,7 +98,6 @@ class PostsListViewModel(
 
     override fun onSaveClicked(post: Post) {
         repository.save(post)
-        selected.value = repository.getById(post.id)
     }
 
     override fun onDeleteClicked(post: Post) {

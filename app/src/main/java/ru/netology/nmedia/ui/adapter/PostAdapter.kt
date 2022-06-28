@@ -76,7 +76,7 @@ internal class PostAdapter(
                 postActionListener.onYouTubeClicked(post)
             }
             else -> {
-                screenActionListener.onPostDetailsClicked(post.id)
+                screenActionListener.onPostDetailsClicked(post)
             }
         }
     }
