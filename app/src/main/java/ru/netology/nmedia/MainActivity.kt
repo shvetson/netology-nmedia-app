@@ -5,6 +5,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.commit
 import ru.netology.nmedia.databinding.ActivityMainBinding
 import ru.netology.nmedia.ui.contract.HasCustomTitle
 import ru.netology.nmedia.ui.screen.PostsListFragment
@@ -34,10 +35,11 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         if (savedInstanceState == null) {
-            supportFragmentManager
-                .beginTransaction()
-                .add(R.id.fragmentContainer, PostsListFragment(), "Home")
-                .commit()
+            if (supportFragmentManager.findFragmentByTag("Home") == null) {
+                supportFragmentManager.commit {
+                    add(R.id.fragmentContainer, PostsListFragment(), "Home")
+                }
+            }
         }
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentListener, false)
     }

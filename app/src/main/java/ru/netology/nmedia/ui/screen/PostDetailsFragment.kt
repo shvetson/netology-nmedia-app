@@ -17,15 +17,16 @@ import ru.netology.nmedia.ui.contract.HasCustomTitle
 import ru.netology.nmedia.viewModel.PostViewModel
 import java.text.SimpleDateFormat
 
-class PostDetailsFragment(
-    private val initialPost: Post
-) : Fragment(R.layout.fragment_post_details), HasCustomTitle {
+class PostDetailsFragment : Fragment(R.layout.fragment_post_details), HasCustomTitle {
 
     private lateinit var binding: FragmentPostDetailsBinding
     private val viewModel: PostViewModel by viewModels()
-    private var currentPost: Post? = null
 
-//    companion object {
+    private val initialPost
+        get() = requireArguments().getParcelable<Post>(INITIAL_POST_KEY)!!
+
+    companion object {
+        private const val INITIAL_POST_KEY = "INITIAL_POST"
 //        private const val ARG_POST_ID = "ARG_POST_ID"
 //
 //        fun newInstance(postId: String): PostDetailsFragment {
@@ -36,13 +37,24 @@ class PostDetailsFragment(
 //            fragment.arguments = bundleOf(ARG_POST to post)
 //            return fragment
 //        }
-//    }
+
+//        operator fun invoke(initialPost: Post) = PostDetailsFragment().apply {
+//            arguments = Bundle(1).also {
+//                it.putParcelable(INITIAL_POST_KEY, initialPost)
+//            }
+//        }
+
+        fun createInstance(initialPost: Post) = PostDetailsFragment().apply {
+            arguments = Bundle(1).also {
+                it.putParcelable(INITIAL_POST_KEY, initialPost)
+            }
+        }
+    }
 
     override fun getTitleRes(): Int = R.string.details
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        viewModel.loadPost(requireArguments().getString(ARG_POST_ID)!!)
 
         setFragmentResultListener(requestKey = PostEditFragment.REQUEST_KEY) { requestKey, bundle ->
             if (requestKey != PostEditFragment.REQUEST_KEY) return@setFragmentResultListener
@@ -112,6 +124,7 @@ class PostDetailsFragment(
                 }
                 R.id.menu_delete -> {
                     initialPost.let { viewModel.onDeleteClicked(it) }
+                    parentFragmentManager.popBackStack()
                     true
                 }
                 else -> false

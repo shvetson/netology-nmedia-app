@@ -6,7 +6,6 @@ interface PostActionListener {
     //Обработка кликов на элементе списка
     fun onLikeClicked(post: Post)
     fun onShareClicked(post: Post)
-    fun onViewClicked(post: Post)
     fun onYouTubeClicked(post: Post)
 
     //Обработка кликов на меню

@@ -64,25 +64,23 @@ class PostViewModel(
         }
     }
 
-    val post: (String) -> Post = repository::getById
+    val getPost: (String) -> Post = repository::getById
 
     val onShareContent = SingleLiveEvent<String>()
     val onViewYoutubeLink = SingleLiveEvent<String>()
-
-    val navigateToPostContentScreenEvent = SingleLiveEvent<Post>()
-
-    val currentPost = MutableLiveData<Post?>(null)
+    val navigateToPostDetailsScreenEvent = SingleLiveEvent<Post>()
 
     fun onAddPost() {
-        navigateToPostContentScreenEvent.call()
+        navigateToPostDetailsScreenEvent.call()
     }
 
     fun onDetailsPost(post: Post) {
-        currentPost.value = post
-        navigateToPostContentScreenEvent.value = post
+        repository.view(post)
+        navigateToPostDetailsScreenEvent.value = getPost(post.id)
     }
 
     // region PostActionListener
+
     override fun onLikeClicked(post: Post) {
         repository.like(post)
     }
@@ -92,9 +90,9 @@ class PostViewModel(
         repository.share(post)
     }
 
-    override fun onViewClicked(post: Post) {
-        repository.view(post)
-    }
+//    override fun onViewClicked(post: Post) {
+//        repository.view(post)
+//    }
 
     override fun onSaveClicked(post: Post) {
         repository.save(post)

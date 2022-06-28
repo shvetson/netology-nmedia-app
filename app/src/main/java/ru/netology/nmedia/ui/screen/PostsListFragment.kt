@@ -56,7 +56,6 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
             override fun onPostDetailsClicked(post: Post) {
                 viewModel.onDetailsPost(post)
             }
-
             override fun onPostEditClicked(postId: String) {
                 launchFragment(
                     R.id.fragmentContainer,
@@ -85,11 +84,11 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
             launchFragment(R.id.fragmentContainer, PostContentFragment.newInstance())
         }
 
-        viewModel.navigateToPostContentScreenEvent.observe(
+        viewModel.navigateToPostDetailsScreenEvent.observe(
             viewLifecycleOwner,
             Observer { initialPost ->
                 parentFragmentManager.commit {
-                    val fragment = PostDetailsFragment(initialPost)
+                    val fragment = PostDetailsFragment.createInstance(initialPost)
                     replace(R.id.fragmentContainer, fragment)
                     addToBackStack(null)
                     replace(R.id.fragmentContainer, fragment)

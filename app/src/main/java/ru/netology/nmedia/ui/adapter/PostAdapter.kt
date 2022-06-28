@@ -37,12 +37,11 @@ internal class PostAdapter(
                 optionsButton.tag = post
                 postLikeButton.tag = post
                 postShareButton.tag = post
-                postViewButton.tag = post
                 videoImageView.tag = post
 
                 postAuthorTextView.text = post.author
-                postCreatedTextView.text =
-                    SimpleDateFormat("dd MMM yyyy в hh:mm").format(post.created)
+                postCreatedTextView.text = SimpleDateFormat("dd MMM yyyy в hh:mm")
+                    .format(post.created)
                 postContentTextView.text = post.content
                 postLikeButton.isChecked = post.likeFlag
                 postLikeButton.text = formatValue(post.like)
@@ -69,9 +68,6 @@ internal class PostAdapter(
             R.id.post_share_button -> {
                 postActionListener.onShareClicked(post)
             }
-            R.id.post_view_button -> {
-                postActionListener.onViewClicked(post)
-            }
             R.id.video_image_view -> {
                 postActionListener.onYouTubeClicked(post)
             }
@@ -95,7 +91,6 @@ internal class PostAdapter(
         binding.root.setOnClickListener(this)
         binding.postLikeButton.setOnClickListener(this)
         binding.postShareButton.setOnClickListener(this)
-        binding.postViewButton.setOnClickListener(this)
         binding.videoImageView.setOnClickListener(this)
 
         return PostViewHolder(binding)

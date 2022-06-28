@@ -146,7 +146,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_spacing_small"
         android:contentDescription="@string/image_view"
-        android:enabled="true"
+        android:enabled="false"
         app:cornerRadius="@dimen/button_corner_radius"
         app:icon="@drawable/ic_view"
         app:layout_constraintBottom_toBottomOf="@+id/post_share_button"
