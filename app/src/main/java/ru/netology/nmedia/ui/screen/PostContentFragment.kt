@@ -10,6 +10,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostContentBinding
 import ru.netology.nmedia.ui.contract.HasCustomTitle
@@ -41,7 +42,8 @@ class PostContentFragment : Fragment(R.layout.fragment_post_content), HasCustomT
 
         binding.okButton.setOnClickListener {
             onOkButtonClicked()
-            requireActivity().supportFragmentManager.popBackStack()
+            findNavController().popBackStack()
+//            requireActivity().supportFragmentManager.popBackStack()
         }
         return binding.root
     }

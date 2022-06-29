@@ -7,11 +7,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.netology.nmedia.R
@@ -57,10 +59,14 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
                 viewModel.onDetailsPost(post)
             }
             override fun onPostEditClicked(postId: String) {
-                launchFragment(
-                    R.id.fragmentContainer,
-                    PostEditFragment.newInstance(postId = postId)
+                findNavController().navigate(
+                    R.id.action_postDetailsFragment_to_postEditFragment,
+                    bundleOf(PostEditFragment.ARG_POST_ID to postId)
                 )
+//                launchFragment(
+//                    R.id.fragmentContainer,
+//                    PostEditFragment.newInstance(postId = postId)
+//                )
             }
         })
         binding.postsRecyclerView.adapter = adapter
@@ -81,18 +87,23 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
         }
 
         binding.addPostButton.setOnClickListener {
-            launchFragment(R.id.fragmentContainer, PostContentFragment.newInstance())
+//            launchFragment(R.id.fragmentContainer, PostContentFragment.newInstance())
+            findNavController().navigate(R.id.action_postsListFragment_to_postContentFragment)
         }
 
         viewModel.navigateToPostDetailsScreenEvent.observe(
             viewLifecycleOwner,
             Observer { initialPost ->
-                parentFragmentManager.commit {
-                    val fragment = PostDetailsFragment.createInstance(initialPost)
-                    replace(R.id.fragmentContainer, fragment)
-                    addToBackStack(null)
-                    replace(R.id.fragmentContainer, fragment)
-                }
+                findNavController().navigate(
+                    R.id.action_postsListFragment_to_postDetailsFragment,
+                    PostDetailsFragment.createBundle(initialPost))
+
+//                parentFragmentManager.commit {
+//                    val fragment = PostDetailsFragment.createInstance(initialPost)
+//                    replace(R.id.fragmentContainer, fragment)
+//                    addToBackStack(null)
+//                    replace(R.id.fragmentContainer, fragment)
+//                }
             })
 
         viewModel.onShareContent.observe(viewLifecycleOwner) { content ->

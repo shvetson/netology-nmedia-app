@@ -6,10 +6,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostDetailsBinding
 import ru.netology.nmedia.model.Post
@@ -45,9 +47,11 @@ class PostDetailsFragment : Fragment(R.layout.fragment_post_details), HasCustomT
 //        }
 
         fun createInstance(initialPost: Post) = PostDetailsFragment().apply {
-            arguments = Bundle(1).also {
-                it.putParcelable(INITIAL_POST_KEY, initialPost)
-            }
+            arguments = createBundle(initialPost)
+        }
+
+        fun createBundle(initialPost: Post) = Bundle(1).apply {
+            putParcelable(INITIAL_POST_KEY, initialPost)
         }
     }
 
@@ -110,21 +114,15 @@ class PostDetailsFragment : Fragment(R.layout.fragment_post_details), HasCustomT
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
-                    initialPost.let { PostEditFragment.newInstance(it.id) }.let {
-                        requireActivity().supportFragmentManager
-                            .beginTransaction()
-                            .addToBackStack(null)
-                            .replace(
-                                R.id.fragmentContainer,
-                                it
-                            )
-                            .commit()
-                    }
+                    findNavController().navigate(
+                        R.id.action_postDetailsFragment_to_postEditFragment,
+                        bundleOf(PostEditFragment.ARG_POST_ID to initialPost.id)
+                    )
                     true
                 }
                 R.id.menu_delete -> {
                     initialPost.let { viewModel.onDeleteClicked(it) }
-                    parentFragmentManager.popBackStack()
+                    findNavController().popBackStack()
                     true
                 }
                 else -> false

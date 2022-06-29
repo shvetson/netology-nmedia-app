@@ -31,7 +31,7 @@ class PostEditFragment : Fragment(R.layout.fragment_post_edit), HasCustomTitle {
     private var video: String? = null
 
     companion object {
-        private const val ARG_POST_ID = "ARG_POST_ID"
+        const val ARG_POST_ID = "ARG_POST_ID"
 
         const val REQUEST_KEY = "REQUEST_KEY"
         const val RESULT_KEY = "RESULT_KEY"
@@ -40,16 +40,13 @@ class PostEditFragment : Fragment(R.layout.fragment_post_edit), HasCustomTitle {
         private const val ARG_CONTENT = "KEY_CONTENT"
         private const val ARG_VIDEO = "KEY_VIDEO"
 
-        fun newInstance(postId: String): PostEditFragment {
-            val fragment = PostEditFragment()
-//            fragment.apply {
-//                arguments = bundleOf(ARG_POST_ID to postId)
-//            }
-            val args = Bundle()
-            args.putString(ARG_POST_ID, postId)
-            fragment.arguments = args
-            return fragment
-        }
+//        fun newInstance(postId: String): PostEditFragment {
+//            val fragment = PostEditFragment()
+//            val args = Bundle()
+//            args.putString(ARG_POST_ID, postId)
+//            fragment.arguments = args
+//            return fragment
+//        }
     }
 
     override fun getTitleRes(): Int = R.string.title_edit_post

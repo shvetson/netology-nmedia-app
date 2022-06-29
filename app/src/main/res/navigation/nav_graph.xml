@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/postsListFragment">
+
+    <fragment
+        android:id="@+id/postsListFragment"
+        android:name="ru.netology.nmedia.ui.screen.PostsListFragment"
+        android:label="PostsListFragment" >
+        <action
+            android:id="@+id/action_postsListFragment_to_postContentFragment"
+            app:destination="@id/postContentFragment" />
+        <action
+            android:id="@+id/action_postsListFragment_to_postEditFragment"
+            app:destination="@id/postEditFragment" />
+        <action
+            android:id="@+id/action_postsListFragment_to_postDetailsFragment"
+            app:destination="@id/postDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/postContentFragment"
+        android:name="ru.netology.nmedia.ui.screen.PostContentFragment"
+        android:label="PostContentFragment" />
+
+    <fragment
+        android:id="@+id/postEditFragment"
+        android:name="ru.netology.nmedia.ui.screen.PostEditFragment"
+        android:label="PostEditFragment" />
+
+    <fragment
+        android:id="@+id/postDetailsFragment"
+        android:name="ru.netology.nmedia.ui.screen.PostDetailsFragment"
+        android:label="PostDetailsFragment" >
+        <action
+            android:id="@+id/action_postDetailsFragment_to_postEditFragment"
+            app:destination="@id/postEditFragment" />
+    </fragment>
+</navigation>
