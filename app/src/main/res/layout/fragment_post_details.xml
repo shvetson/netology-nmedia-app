@@ -57,7 +57,7 @@
         android:contentDescription="@string/desc_options_button"
         android:minWidth="40dp"
         android:minHeight="40dp"
-        android:src ="@drawable/ic_baseline_more_vert_24"
+        android:src="@drawable/ic_baseline_more_vert_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/post_author_text_view" />
 
@@ -69,21 +69,29 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="post_avatar_image_view, post_author_text_view, post_created_text_view" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/post_content_text_view"
+    <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_spacing"
         android:layout_marginTop="@dimen/common_spacing_small"
         android:layout_marginEnd="@dimen/common_spacing"
         android:paddingBottom="@dimen/common_spacing_small"
-        android:scrollbars="vertical"
-        android:textColor="@color/gray_800"
-        android:textSize="@dimen/font_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header_barrier"
-        tools:text="Text" />
+        android:fillViewport="true">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/post_content_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:textColor="@color/gray_800"
+            android:textSize="@dimen/font_size"
+            tools:text="Text" />
+
+    </ScrollView>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/post_video_text_view"
@@ -95,9 +103,9 @@
         android:inputType="textUri"
         android:paddingBottom="@dimen/common_spacing_small"
         android:textSize="@dimen/font_size"
-        app:layout_constraintEnd_toEndOf="@+id/post_content_text_view"
-        app:layout_constraintStart_toStartOf="@+id/post_content_text_view"
-        app:layout_constraintTop_toBottomOf="@+id/post_content_text_view"
+        app:layout_constraintEnd_toEndOf="@+id/scroll_view"
+        app:layout_constraintStart_toStartOf="@+id/scroll_view"
+        app:layout_constraintTop_toBottomOf="@+id/scroll_view"
         tools:text="https://youtube.com/..." />
 
     <androidx.constraintlayout.widget.Barrier
