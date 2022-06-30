@@ -10,50 +10,34 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostEditBinding
 import ru.netology.nmedia.model.Post
-import ru.netology.nmedia.ui.contract.HasCustomTitle
-import ru.netology.nmedia.viewModel.PostEditViewModel
+import ru.netology.nmedia.viewModel.PostViewModel
 
 
-class PostEditFragment : Fragment(R.layout.fragment_post_edit), HasCustomTitle {
+class PostEditFragment : Fragment(R.layout.fragment_post_edit) {
     private lateinit var binding: FragmentPostEditBinding
-    private val viewModel: PostEditViewModel by viewModels()
+    private val viewModel: PostViewModel by viewModels()
+    private val args: PostEditFragmentArgs by navArgs()
 
-    private val postId: String by lazy {
-        requireArguments().getString(ARG_POST_ID).toString()
-    }
+    private val initialPost
+//        get() = PostDetailsFragmentArgs.fromBundle(requireArguments()).initialPost
+        get() = args.initialPost
 
     private var author: String? = null
     private var content: String? = null
     private var video: String? = null
 
     companion object {
-        const val ARG_POST_ID = "ARG_POST_ID"
-
-        const val REQUEST_KEY = "REQUEST_KEY"
-        const val RESULT_KEY = "RESULT_KEY"
+        const val REQUEST_KEY = "updatePost"
+        const val RESULT_KEY = "updatePost"
 
         private const val ARG_AUTHOR = "KEY_AUTHOR"
         private const val ARG_CONTENT = "KEY_CONTENT"
         private const val ARG_VIDEO = "KEY_VIDEO"
-
-//        fun newInstance(postId: String): PostEditFragment {
-//            val fragment = PostEditFragment()
-//            val args = Bundle()
-//            args.putString(ARG_POST_ID, postId)
-//            fragment.arguments = args
-//            return fragment
-//        }
-    }
-
-    override fun getTitleRes(): Int = R.string.title_edit_post
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel.loadPost(postId)
     }
 
     override fun onCreateView(
@@ -62,14 +46,13 @@ class PostEditFragment : Fragment(R.layout.fragment_post_edit), HasCustomTitle {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPostEditBinding.inflate(inflater, container, false)
-        viewModel.data.observe(viewLifecycleOwner, Observer<Post> {
-            render(it)
-        })
+
+        render(initialPost)
         requestFocusAndShowSoftInput(binding.postContentEditText)
 
         binding.okButton.setOnClickListener {
             onOkButtonClicked()
-            requireActivity().supportFragmentManager.popBackStack()
+            findNavController().navigateUp()
         }
         return binding.root
     }
@@ -84,16 +67,22 @@ class PostEditFragment : Fragment(R.layout.fragment_post_edit), HasCustomTitle {
 
     private fun onOkButtonClicked() {
         val updatedPost = viewModel.updatePost(
+            id = initialPost.id,
             author = binding.postAuthorEditText.text.toString(),
             content = binding.postContentEditText.text.toString(),
             video = binding.postVideoEditText.text.toString()
                 .ifBlank { "https://www.youtube.com/watch?v=WhWc3b3KhnY" }
-        )
+        )!!
+
+        // Возврат результата
+        // Использовать для соседних окон
+//        findNavController().previousBackStackEntry?.savedStateHandle?.set(RESULT_KEY, updatedPost)
 
         setFragmentResult(
             requestKey = REQUEST_KEY,
             bundleOf(RESULT_KEY to updatedPost)
         )
+        findNavController().navigateUp()
     }
 
     private fun requestFocusAndShowSoftInput(view: View) {

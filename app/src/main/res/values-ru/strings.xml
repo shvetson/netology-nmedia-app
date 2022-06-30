@@ -17,11 +17,11 @@
     <string name="desc_fab_post_save">Кнопка OK</string>
     <string name="title_new_post">Новый пост</string>
     <string name="title_edit_post">Редактирование поста</string>
+    <string name="title_details_post">Пост</string>
     <string name="action_bar_label">Новый пост / редактирование</string>
     <string name="menu_item_move_up">Перемещение вверх</string>
     <string name="menu_item_move_down">Перемещение вниз</string>
     <string name="menu_item_delete">Удаление</string>
-    <string name="details">Подробности о посте</string>
     <string name="done">Выполнено</string>
     <string name="new_post_label_author">Автор</string>
     <string name="new_post_label_text">Пост</string>

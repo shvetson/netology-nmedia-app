@@ -3,71 +3,29 @@ package ru.netology.nmedia.ui.screen
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostDetailsBinding
 import ru.netology.nmedia.model.Post
-import ru.netology.nmedia.ui.contract.HasCustomTitle
 import ru.netology.nmedia.viewModel.PostViewModel
 import java.text.SimpleDateFormat
 
-class PostDetailsFragment : Fragment(R.layout.fragment_post_details), HasCustomTitle {
+class PostDetailsFragment : Fragment(R.layout.fragment_post_details) {
 
     private lateinit var binding: FragmentPostDetailsBinding
     private val viewModel: PostViewModel by viewModels()
+    private val args: PostDetailsFragmentArgs by navArgs()
 
     private val initialPost
-        get() = requireArguments().getParcelable<Post>(INITIAL_POST_KEY)!!
-
-    companion object {
-        private const val INITIAL_POST_KEY = "INITIAL_POST"
-//        private const val ARG_POST_ID = "ARG_POST_ID"
-//
-//        fun newInstance(postId: String): PostDetailsFragment {
-//            val fragment = PostDetailsFragment()
-//            val args = Bundle()
-//            args.putString(ARG_POST_ID, postId)
-//            fragment.arguments = args
-//            fragment.arguments = bundleOf(ARG_POST to post)
-//            return fragment
-//        }
-
-//        operator fun invoke(initialPost: Post) = PostDetailsFragment().apply {
-//            arguments = Bundle(1).also {
-//                it.putParcelable(INITIAL_POST_KEY, initialPost)
-//            }
-//        }
-
-        fun createInstance(initialPost: Post) = PostDetailsFragment().apply {
-            arguments = createBundle(initialPost)
-        }
-
-        fun createBundle(initialPost: Post) = Bundle(1).apply {
-            putParcelable(INITIAL_POST_KEY, initialPost)
-        }
-    }
-
-    override fun getTitleRes(): Int = R.string.details
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setFragmentResultListener(requestKey = PostEditFragment.REQUEST_KEY) { requestKey, bundle ->
-            if (requestKey != PostEditFragment.REQUEST_KEY) return@setFragmentResultListener
-            val updatedPost = bundle.getParcelable<Post>(PostEditFragment.RESULT_KEY)
-                ?: return@setFragmentResultListener
-            viewModel.onSaveClicked(updatedPost)
-            Log.d("NMEDIA_App", "updated - $updatedPost")
-        }
-    }
+//        get() = PostDetailsFragmentArgs.fromBundle(requireArguments()).
+        get() = args.initialPost
 
     @SuppressLint("SimpleDateFormat")
     override fun onCreateView(
@@ -78,7 +36,7 @@ class PostDetailsFragment : Fragment(R.layout.fragment_post_details), HasCustomT
         binding = FragmentPostDetailsBinding.inflate(inflater, container, false)
         render(initialPost)
         binding.okButton.setOnClickListener {
-            parentFragmentManager.popBackStack()
+            findNavController().navigateUp()
         }
         binding.optionsButton.setOnClickListener { view ->
             showPopupMenu(view)
@@ -114,15 +72,16 @@ class PostDetailsFragment : Fragment(R.layout.fragment_post_details), HasCustomT
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
-                    findNavController().navigate(
-                        R.id.action_postDetailsFragment_to_postEditFragment,
-                        bundleOf(PostEditFragment.ARG_POST_ID to initialPost.id)
-                    )
+                    val directions = PostDetailsFragmentDirections.actionPostDetailsFragmentToPostEditFragment(initialPost)
+                    findNavController().navigate(directions)
                     true
                 }
                 R.id.menu_delete -> {
-                    initialPost.let { viewModel.onDeleteClicked(it) }
-                    findNavController().popBackStack()
+                    viewModel.onDeleteClicked(initialPost)
+                    val directions = PostDetailsFragmentDirections.actionPostDetailsFragmentToPostsListFragment()
+                    findNavController().navigate(directions)
+//                    findNavController().popBackStack(R.id.postsListFragment, false)
+//                    findNavController().navigateUp()
                     true
                 }
                 else -> false

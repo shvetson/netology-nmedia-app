@@ -2,14 +2,13 @@ package ru.netology.nmedia.viewModel
 
 import SingleLiveEvent
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import ru.netology.nmedia.PostNotFoundException
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.model.impl.PostRepositoryFileImpl
 import ru.netology.nmedia.model.repositoty.PostRepository
 import ru.netology.nmedia.ui.listener.PostActionListener
+import java.util.*
 
 class PostViewModel(
     application: Application
@@ -18,65 +17,45 @@ class PostViewModel(
     private val repository: PostRepository = PostRepositoryFileImpl(application)
     val data get() = repository.data
 
-//    private val posts: MutableLiveData<List<Post>> by lazy {
-//        MutableLiveData<List<Post>>().also {
-//                it.value = loadPosts()
-//        }
-//    }
-//
-//    fun getPosts(): LiveData<List<Post>> {
-//        Log.d("App_Tag", posts.value.toString())
-//        return posts
-//    }
-//
-//    private fun loadPosts() = repository.getAll()
-
-//    private val posts: () -> List<Post> = repository::getAll
-//    private val _posts = MutableLiveData<List<Post>>()
-//    val data: LiveData<List<Post>> = _posts
-//
-//    fun loadPosts() {
-//        if (_posts.value != null) return
-//        try {
-//            _posts.value = posts()
-//        } catch (e: PostNotFoundException) {
-//            e.printStackTrace()
-//        }
-//    }
-
-    //    private val post: (String) -> Post = repository::getById
-
-//    val selected = MutableLiveData<Post>()
-//
-//    fun select(postId: String) {
-//        selected.value = repository.getById(postId)
-//    }
-
-    private val _mPost = MutableLiveData<Post>()
-    val mPost: LiveData<Post> = _mPost
-
-    fun loadPost(postId: String) {
-        if (_mPost.value != null) return
-        try {
-            _mPost.value = repository.getById(postId)
-        } catch (e: PostNotFoundException) {
-            e.printStackTrace()
-        }
-    }
-
     val getPost: (String) -> Post = repository::getById
 
     val onShareContent = SingleLiveEvent<String>()
     val onViewYoutubeLink = SingleLiveEvent<String>()
     val navigateToPostDetailsScreenEvent = SingleLiveEvent<Post>()
 
-    fun onAddPost() {
-        navigateToPostDetailsScreenEvent.call()
-    }
+//    fun onAddPost() {
+//        navigateToPostDetailsScreenEvent.call()
+//    }
 
     fun onDetailsPost(post: Post) {
         repository.view(post)
         navigateToPostDetailsScreenEvent.value = getPost(post.id)
+    }
+
+    fun updatePost(id: String, author: String, content: String, video: String): Post? {
+        if (author.isBlank() || content.isBlank()) return null
+        val post = getPost(id)
+
+        return post.copy(
+            author = author,
+            content = content,
+            video = video.ifBlank { "https://www.youtube.com/watch?v=WhWc3b3KhnY" },
+            created = Date().time
+        )
+    }
+
+    fun newPost(author: String, content: String, video: String): Post? {
+        if (author.isBlank() || content.isBlank()) return null
+
+        return Post(
+            id = "",
+            author = author,
+            content = content,
+            video = video.ifBlank { "https://www.youtube.com/watch?v=WhWc3b3KhnY" },
+            like = 0,
+            share = 0,
+            view = 0
+        )
     }
 
     // region PostActionListener

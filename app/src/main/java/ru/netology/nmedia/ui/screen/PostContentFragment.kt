@@ -13,24 +13,17 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostContentBinding
-import ru.netology.nmedia.ui.contract.HasCustomTitle
-import ru.netology.nmedia.viewModel.PostContentViewModel
+import ru.netology.nmedia.viewModel.PostViewModel
 
-class PostContentFragment : Fragment(R.layout.fragment_post_content), HasCustomTitle {
+class PostContentFragment : Fragment(R.layout.fragment_post_content) {
 
     private lateinit var binding: FragmentPostContentBinding
-    private val viewModel: PostContentViewModel by viewModels()
+    private val viewModel: PostViewModel by viewModels()
 
     companion object {
-        const val REQUEST_KEY = "REQUEST_KEY"
+        const val REQUEST_KEY = "NEW_POST"
         const val RESULT_KEY = "RESULT_KEY"
-
-        fun newInstance(): PostContentFragment {
-            return PostContentFragment()
-        }
     }
-
-    override fun getTitleRes(): Int = R.string.title_new_post
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,8 +35,7 @@ class PostContentFragment : Fragment(R.layout.fragment_post_content), HasCustomT
 
         binding.okButton.setOnClickListener {
             onOkButtonClicked()
-            findNavController().popBackStack()
-//            requireActivity().supportFragmentManager.popBackStack()
+            findNavController().navigateUp()
         }
         return binding.root
     }
@@ -54,7 +46,7 @@ class PostContentFragment : Fragment(R.layout.fragment_post_content), HasCustomT
             content = binding.postContentEditText.text.toString(),
             video = binding.postVideoEditText.text.toString()
                 .ifBlank { "https://www.youtube.com/watch?v=WhWc3b3KhnY" }
-        )
+        )!!
 
         setFragmentResult(
             requestKey = REQUEST_KEY,

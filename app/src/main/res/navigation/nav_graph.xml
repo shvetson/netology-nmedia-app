@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/postsListFragment">
 
     <fragment
         android:id="@+id/postsListFragment"
         android:name="ru.netology.nmedia.ui.screen.PostsListFragment"
-        android:label="PostsListFragment" >
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_posts_list">
         <action
             android:id="@+id/action_postsListFragment_to_postContentFragment"
             app:destination="@id/postContentFragment" />
@@ -22,19 +24,32 @@
     <fragment
         android:id="@+id/postContentFragment"
         android:name="ru.netology.nmedia.ui.screen.PostContentFragment"
-        android:label="PostContentFragment" />
+        android:label="@string/title_new_post"
+        tools:layout="@layout/fragment_post_content"/>
 
     <fragment
         android:id="@+id/postEditFragment"
         android:name="ru.netology.nmedia.ui.screen.PostEditFragment"
-        android:label="PostEditFragment" />
+        android:label="@string/title_edit_post"
+        tools:layout="@layout/fragment_post_edit">
+        <argument
+            android:name="initialPost"
+            app:argType="ru.netology.nmedia.model.Post" />
+    </fragment>
 
     <fragment
         android:id="@+id/postDetailsFragment"
         android:name="ru.netology.nmedia.ui.screen.PostDetailsFragment"
-        android:label="PostDetailsFragment" >
+        android:label="@string/title_details_post"
+        tools:layout="@layout/fragment_post_details">
         <action
             android:id="@+id/action_postDetailsFragment_to_postEditFragment"
             app:destination="@id/postEditFragment" />
+        <argument
+            android:name="initialPost"
+            app:argType="ru.netology.nmedia.model.Post" />
+        <action
+            android:id="@+id/action_postDetailsFragment_to_postsListFragment"
+            app:destination="@id/postsListFragment" />
     </fragment>
 </navigation>

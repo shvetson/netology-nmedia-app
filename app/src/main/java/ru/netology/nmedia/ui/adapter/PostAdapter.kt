@@ -2,6 +2,7 @@ package ru.netology.nmedia.ui.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -119,7 +120,7 @@ internal class PostAdapter(
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_edit -> {
-                    screenActionListener.onPostEditClicked(post.id)
+                    screenActionListener.onPostEditClicked(post)
                     true
                 }
                 R.id.menu_delete -> {

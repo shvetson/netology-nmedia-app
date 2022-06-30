@@ -40,12 +40,25 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
             viewModel.onSaveClicked(newPost)
         }
 
+        // Слушатель ответа с экрана редактирования
         setFragmentResultListener(requestKey = PostEditFragment.REQUEST_KEY) { requestKey, bundle ->
             if (requestKey != PostEditFragment.REQUEST_KEY) return@setFragmentResultListener
             val updatedPost = bundle.getParcelable<Post>(PostEditFragment.RESULT_KEY)
                 ?: return@setFragmentResultListener
             viewModel.onSaveClicked(updatedPost)
         }
+
+        // Использовать для соседних окон (вперед - назад)
+//        val liveData =
+//            findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Post>(
+//                PostEditFragment.RESULT_KEY
+//            )
+//        liveData?.observe(this, Observer {updatedPost->
+//            if (updatedPost != null) {
+//            viewModel.onSaveClicked(updatedPost)
+//            liveData.value = null
+//            }
+//        })
     }
 
     override fun onCreateView(
@@ -55,18 +68,17 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
     ): View {
         binding = FragmentPostsListBinding.inflate(inflater, container, false)
         adapter = PostAdapter(viewModel, object : ScreenActionListener {
+
             override fun onPostDetailsClicked(post: Post) {
                 viewModel.onDetailsPost(post)
             }
-            override fun onPostEditClicked(postId: String) {
-                findNavController().navigate(
-                    R.id.action_postDetailsFragment_to_postEditFragment,
-                    bundleOf(PostEditFragment.ARG_POST_ID to postId)
-                )
-//                launchFragment(
-//                    R.id.fragmentContainer,
-//                    PostEditFragment.newInstance(postId = postId)
-//                )
+
+            override fun onPostEditClicked(initialPost: Post) {
+                val directions =
+                    PostsListFragmentDirections.actionPostsListFragmentToPostEditFragment(
+                        initialPost
+                    )
+                findNavController().navigate(directions)
             }
         })
         binding.postsRecyclerView.adapter = adapter
@@ -75,7 +87,6 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
         binding.postsRecyclerView.layoutManager = layoutManager
 
         viewModel.data.observe(viewLifecycleOwner, Observer<List<Post>> {
-            Log.d("NMEDIA_App", "List - ${it.map { post -> post.author }}")
             adapter.submitList(it)
         })
 
@@ -86,24 +97,22 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
             itemAnimator.supportsChangeAnimations = false
         }
 
+        // Запуск фрагмента с формой для добавления поста
         binding.addPostButton.setOnClickListener {
-//            launchFragment(R.id.fragmentContainer, PostContentFragment.newInstance())
-            findNavController().navigate(R.id.action_postsListFragment_to_postContentFragment)
+            val directions =
+                PostsListFragmentDirections.actionPostsListFragmentToPostContentFragment()
+            findNavController().navigate(directions)
         }
 
+        // Наблюдатель за изменением в singleEvent и запуск фрагмента по просмотру данных поста
         viewModel.navigateToPostDetailsScreenEvent.observe(
             viewLifecycleOwner,
             Observer { initialPost ->
-                findNavController().navigate(
-                    R.id.action_postsListFragment_to_postDetailsFragment,
-                    PostDetailsFragment.createBundle(initialPost))
-
-//                parentFragmentManager.commit {
-//                    val fragment = PostDetailsFragment.createInstance(initialPost)
-//                    replace(R.id.fragmentContainer, fragment)
-//                    addToBackStack(null)
-//                    replace(R.id.fragmentContainer, fragment)
-//                }
+                val direction =
+                    PostsListFragmentDirections.actionPostsListFragmentToPostDetailsFragment(
+                        initialPost
+                    )
+                findNavController().navigate(direction)
             })
 
         viewModel.onShareContent.observe(viewLifecycleOwner) { content ->
@@ -128,13 +137,5 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
             startActivity(intent)
         }
         return binding.root
-    }
-
-    private fun launchFragment(fragmentContainer: Int, fragment: Fragment) {
-        requireActivity().supportFragmentManager
-            .beginTransaction()
-            .addToBackStack(null)
-            .replace(fragmentContainer, fragment)
-            .commit()
     }
 }
