@@ -4,6 +4,8 @@ import SingleLiveEvent
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.model.impl.PostRepositoryFileImpl
 import ru.netology.nmedia.model.repositoty.PostRepository
@@ -16,6 +18,17 @@ class PostViewModel(
 
     private val repository: PostRepository = PostRepositoryFileImpl(application)
     val data get() = repository.data
+
+    private val _post: MutableLiveData<Post> by lazy {
+        MutableLiveData<Post>()
+    }
+
+    val post: LiveData<Post> = _post
+
+    fun loadPost(post : Post): LiveData<Post> {
+        _post.value = post
+        return _post
+    }
 
     val getPost: (String) -> Post = repository::getById
 
@@ -56,6 +69,14 @@ class PostViewModel(
             share = 0,
             view = 0
         )
+    }
+
+    fun like(post: Post) {
+        _post.value = post.copy(like = if (post.likeFlag) post.like - 1 else post.like + 1, likeFlag = !post.likeFlag)
+    }
+
+    fun share(post: Post) {
+        _post.value = post.copy(share = post.share + 1)
     }
 
     // region PostActionListener

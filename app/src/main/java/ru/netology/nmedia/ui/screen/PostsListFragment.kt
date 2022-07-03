@@ -1,25 +1,20 @@
 package ru.netology.nmedia.ui.screen
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostsListBinding
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.ui.adapter.PostAdapter
+import ru.netology.nmedia.ui.contract.contract
 import ru.netology.nmedia.ui.listener.ScreenActionListener
 import ru.netology.nmedia.viewModel.PostViewModel
 
@@ -40,7 +35,6 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
             viewModel.onSaveClicked(newPost)
         }
 
-        // Слушатель ответа с экрана редактирования
         setFragmentResultListener(requestKey = PostEditFragment.REQUEST_KEY) { requestKey, bundle ->
             if (requestKey != PostEditFragment.REQUEST_KEY) return@setFragmentResultListener
             val updatedPost = bundle.getParcelable<Post>(PostEditFragment.RESULT_KEY)
@@ -74,11 +68,7 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
             }
 
             override fun onPostEditClicked(initialPost: Post) {
-                val directions =
-                    PostsListFragmentDirections.actionPostsListFragmentToPostEditFragment(
-                        initialPost
-                    )
-                findNavController().navigate(directions)
+                contract().launchEditPostFromListPosts(initialPost)
             }
         })
         binding.postsRecyclerView.adapter = adapter
@@ -99,42 +89,21 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
 
         // Запуск фрагмента с формой для добавления поста
         binding.addPostButton.setOnClickListener {
-            val directions =
-                PostsListFragmentDirections.actionPostsListFragmentToPostContentFragment()
-            findNavController().navigate(directions)
+            contract().launchPostContentFromListPosts()
         }
 
         // Наблюдатель за изменением в singleEvent и запуск фрагмента по просмотру данных поста
         viewModel.navigateToPostDetailsScreenEvent.observe(
-            viewLifecycleOwner,
-            Observer { initialPost ->
-                val direction =
-                    PostsListFragmentDirections.actionPostsListFragmentToPostDetailsFragment(
-                        initialPost
-                    )
-                findNavController().navigate(direction)
+            viewLifecycleOwner, Observer { initialPost ->
+                contract().launchPostDetailsFromListPosts(initialPost)
             })
 
         viewModel.onShareContent.observe(viewLifecycleOwner) { content ->
-            val intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, content)
-            }
-
-            val shareIntent =
-                Intent.createChooser(
-                    intent, getString(R.string.chooser_share_post)
-                )
-            startActivity(shareIntent)
+            contract().launchShareIntent(content)
         }
 
         viewModel.onViewYoutubeLink.observe(viewLifecycleOwner) { video ->
-            val intent = Intent().apply {
-                action = Intent.ACTION_VIEW
-                data = Uri.parse(video)
-            }
-            startActivity(intent)
+            contract().launchViewVideoOnYouTube(video)
         }
         return binding.root
     }
