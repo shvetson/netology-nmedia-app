@@ -2,7 +2,6 @@ package ru.netology.nmedia.viewModel
 
 import SingleLiveEvent
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

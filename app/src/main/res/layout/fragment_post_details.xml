@@ -40,8 +40,9 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:textColor="@color/gray_800"
+                android:textStyle="bold"
                 android:textSize="@dimen/font_size"
-                tools:text="Название автора поста" />
+                tools:text="Автор поста" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/post_created_text_view"
@@ -90,7 +91,7 @@
             android:scrollbars="vertical"
             android:textColor="@color/gray_800"
             android:textSize="@dimen/font_size"
-            tools:text="Text" />
+            tools:text="Содержание поста" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/post_video_text_view"

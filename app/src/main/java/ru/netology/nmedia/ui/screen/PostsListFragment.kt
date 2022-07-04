@@ -42,6 +42,14 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
             viewModel.onSaveClicked(updatedPost)
         }
 
+        setFragmentResultListener(requestKey = PostDetailsFragment.REQUEST_KEY) { requestKey, bundle ->
+            if (requestKey != PostDetailsFragment.REQUEST_KEY) return@setFragmentResultListener
+            val deletePost = bundle.getParcelable<Post>(PostDetailsFragment.RESULT_KEY)
+                ?: return@setFragmentResultListener
+            viewModel.onDeleteClicked(deletePost)
+        }
+
+
         // Использовать для соседних окон (вперед - назад)
 //        val liveData =
 //            findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Post>(

@@ -3,11 +3,8 @@ package ru.netology.nmedia
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.ui.contract.AppContract
@@ -57,20 +54,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AppContract {
         navController.navigate(direction)
     }
 
-    override fun launchEditPostFromDetailsPost(post: Post) {
-        val direction =
-            PostDetailsFragmentDirections.actionPostDetailsFragmentToPostEditFragment(post)
-        navController.navigate(direction)
-    }
-
-    override fun launchListPostsFromDetailsPost() {
-        val direction =
-            PostDetailsFragmentDirections.actionPostDetailsFragmentToPostsListFragment()
-        navController.navigate(direction)
-//      findNavController().popBackStack(R.id.postsListFragment, false)
-//      findNavController().navigateUp()
-    }
-
     override fun launchPostContentFromListPosts() {
         val direction =
             PostsListFragmentDirections.actionPostsListFragmentToPostContentFragment()
@@ -80,6 +63,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AppContract {
     override fun launchPostDetailsFromListPosts(post: Post) {
         val direction =
             PostsListFragmentDirections.actionPostsListFragmentToPostDetailsFragment(post)
+        navController.navigate(direction)
+    }
+
+    override fun launchEditPostFromDetailsPost(post: Post) {
+        val direction =
+            PostDetailsFragmentDirections.actionPostDetailsFragmentToPostEditFragment(post)
         navController.navigate(direction)
     }
 }

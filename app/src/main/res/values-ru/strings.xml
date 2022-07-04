@@ -29,4 +29,9 @@
     <string name="new_post_hint_enter_author">Введите имя автора поста</string>
     <string name="new_post_hint_enter_content_post">Введите текст поста</string>
     <string name="new_post_hint_enter_youtube_link">Введите ссылку на youtube хостинг</string>
+
+    <string name="alert_dialog_delete_title">Удаление</string>
+    <string name="alert_dialog_delete_message">Действительно хотите удалить элемент списка?</string>
+    <string name="alert_dialog_delete_positive_button">Удаление</string>
+    <string name="alert_dialog_delete_negative_button">Отмена</string>
 </resources>

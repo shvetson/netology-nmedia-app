@@ -22,7 +22,7 @@ class PostContentFragment : Fragment(R.layout.fragment_post_content) {
 
     companion object {
         const val REQUEST_KEY = "NEW_POST"
-        const val RESULT_KEY = "RESULT_KEY"
+        const val RESULT_KEY = "NEW_POST"
     }
 
     override fun onCreateView(

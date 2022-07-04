@@ -48,8 +48,5 @@
         <argument
             android:name="initialPost"
             app:argType="ru.netology.nmedia.model.Post" />
-        <action
-            android:id="@+id/action_postDetailsFragment_to_postsListFragment"
-            app:destination="@id/postsListFragment" />
     </fragment>
 </navigation>

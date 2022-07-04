@@ -2,13 +2,13 @@ package ru.netology.nmedia.ui.screen
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
@@ -25,7 +25,6 @@ import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.ui.contract.contract
 import ru.netology.nmedia.viewModel.PostViewModel
 import java.text.SimpleDateFormat
-import kotlin.properties.Delegates
 
 class PostDetailsFragment : Fragment(R.layout.fragment_post_details) {
 
@@ -44,6 +43,9 @@ class PostDetailsFragment : Fragment(R.layout.fragment_post_details) {
     companion object {
         private const val ARG_POST = "ARG_POST"
         private const val ARG_BUTTON = "ARG_BUTTON"
+
+        const val REQUEST_KEY = "DELETE_POST"
+        const val RESULT_KEY = "DELETE_POST"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -145,8 +147,23 @@ class PostDetailsFragment : Fragment(R.layout.fragment_post_details) {
                     true
                 }
                 R.id.menu_delete -> {
-                    viewModel.onDeleteClicked(initialPost)
-                    contract().launchListPostsFromDetailsPost()
+                    val listener = DialogInterface.OnClickListener { _, which ->
+                        if (which == DialogInterface.BUTTON_POSITIVE) {
+                            setFragmentResult(
+                                requestKey = REQUEST_KEY,
+                                bundleOf(RESULT_KEY to initialPost)
+                            )
+                            findNavController().navigateUp()
+//      findNavController().popBackStack(R.id.postsListFragment, false)
+                        }
+                    }
+                    val dialog = AlertDialog.Builder(context)
+                        .setTitle(R.string.alert_dialog_delete_title)
+                        .setMessage(R.string.alert_dialog_delete_message)
+                        .setPositiveButton(R.string.alert_dialog_delete_positive_button, listener)
+                        .setNegativeButton(R.string.alert_dialog_delete_negative_button, listener)
+                        .create()
+                    dialog.show()
                     true
                 }
                 else -> false

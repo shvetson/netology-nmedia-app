@@ -2,10 +2,12 @@ package ru.netology.nmedia.ui.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -124,7 +126,18 @@ internal class PostAdapter(
                     true
                 }
                 R.id.menu_delete -> {
-                    postActionListener.onDeleteClicked(post)
+                    val listener = DialogInterface.OnClickListener { _, which ->
+                        if (which == DialogInterface.BUTTON_POSITIVE) {
+                            postActionListener.onDeleteClicked(post)
+                        }
+                    }
+                    val dialog = AlertDialog.Builder(context)
+                        .setTitle(R.string.alert_dialog_delete_title)
+                        .setMessage(R.string.alert_dialog_delete_message)
+                        .setPositiveButton(R.string.alert_dialog_delete_positive_button, listener)
+                        .setNegativeButton(R.string.alert_dialog_delete_negative_button, listener)
+                        .create()
+                    dialog.show()
                     true
                 }
                 R.id.menu_move_up -> {

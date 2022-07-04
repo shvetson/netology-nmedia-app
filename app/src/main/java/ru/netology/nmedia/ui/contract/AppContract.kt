@@ -12,5 +12,4 @@ interface AppContract {
     fun launchPostContentFromListPosts()
     fun launchPostDetailsFromListPosts(post: Post)
     fun launchEditPostFromDetailsPost(post: Post)
-    fun launchListPostsFromDetailsPost()
 }

@@ -17,7 +17,6 @@ import ru.netology.nmedia.databinding.FragmentPostEditBinding
 import ru.netology.nmedia.model.Post
 import ru.netology.nmedia.viewModel.PostViewModel
 
-
 class PostEditFragment : Fragment(R.layout.fragment_post_edit) {
     private lateinit var binding: FragmentPostEditBinding
     private val viewModel: PostViewModel by viewModels()
@@ -32,8 +31,8 @@ class PostEditFragment : Fragment(R.layout.fragment_post_edit) {
     private var video: String? = null
 
     companion object {
-        const val REQUEST_KEY = "updatePost"
-        const val RESULT_KEY = "updatePost"
+        const val REQUEST_KEY = "UPDATE_POST"
+        const val RESULT_KEY = "UPDATE_POST"
 
         private const val ARG_AUTHOR = "KEY_AUTHOR"
         private const val ARG_CONTENT = "KEY_CONTENT"
